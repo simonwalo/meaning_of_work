@@ -1,11 +1,11 @@
 #%% import packages
 
-import gensim
 from gensim.models import KeyedVectors
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-
+from sklearn.decomposition import PCA
+import pickle
 
 
 #%% load all data in C text format
@@ -33,7 +33,55 @@ embeddings1990 = KeyedVectors.load_word2vec_format("./data/english_all_sgns_gens
 
 
 
-#%% word lists & preps
+#%% save embeddings in python format (loads faster)
+
+pickle.dump(embeddings1800, open("./data/embeddings1800.pickle", 'wb'))
+pickle.dump(embeddings1810, open("./data/embeddings1810.pickle", 'wb'))
+pickle.dump(embeddings1820, open("./data/embeddings1820.pickle", 'wb'))
+pickle.dump(embeddings1830, open("./data/embeddings1830.pickle", 'wb'))
+pickle.dump(embeddings1840, open("./data/embeddings1840.pickle", 'wb'))
+pickle.dump(embeddings1850, open("./data/embeddings1850.pickle", 'wb'))
+pickle.dump(embeddings1860, open("./data/embeddings1860.pickle", 'wb'))
+pickle.dump(embeddings1870, open("./data/embeddings1870.pickle", 'wb'))
+pickle.dump(embeddings1880, open("./data/embeddings1880.pickle", 'wb'))
+pickle.dump(embeddings1890, open("./data/embeddings1890.pickle", 'wb'))
+pickle.dump(embeddings1900, open("./data/embeddings1900.pickle", 'wb'))
+pickle.dump(embeddings1910, open("./data/embeddings1910.pickle", 'wb'))
+pickle.dump(embeddings1920, open("./data/embeddings1920.pickle", 'wb'))
+pickle.dump(embeddings1930, open("./data/embeddings1930.pickle", 'wb'))
+pickle.dump(embeddings1940, open("./data/embeddings1940.pickle", 'wb'))
+pickle.dump(embeddings1950, open("./data/embeddings1950.pickle", 'wb'))
+pickle.dump(embeddings1960, open("./data/embeddings1960.pickle", 'wb'))
+pickle.dump(embeddings1970, open("./data/embeddings1970.pickle", 'wb'))
+pickle.dump(embeddings1980, open("./data/embeddings1980.pickle", 'wb'))
+pickle.dump(embeddings1990, open("./data/embeddings1990.pickle", 'wb'))
+
+
+#%% load pickled files
+
+embeddings1800 = pickle.load(open("./data/embeddings1800.pickle", 'rb'))
+embeddings1810 = pickle.load(open("./data/embeddings1810.pickle", 'rb'))
+embeddings1820 = pickle.load(open("./data/embeddings1820.pickle", 'rb'))
+embeddings1830 = pickle.load(open("./data/embeddings1830.pickle", 'rb'))
+embeddings1840 = pickle.load(open("./data/embeddings1840.pickle", 'rb'))
+embeddings1850 = pickle.load(open("./data/embeddings1850.pickle", 'rb'))
+embeddings1860 = pickle.load(open("./data/embeddings1860.pickle", 'rb'))
+embeddings1870 = pickle.load(open("./data/embeddings1870.pickle", 'rb'))
+embeddings1880 = pickle.load(open("./data/embeddings1880.pickle", 'rb'))
+embeddings1890 = pickle.load(open("./data/embeddings1890.pickle", 'rb'))
+embeddings1900 = pickle.load(open("./data/embeddings1900.pickle", 'rb'))
+embeddings1910 = pickle.load(open("./data/embeddings1910.pickle", 'rb'))
+embeddings1920 = pickle.load(open("./data/embeddings1920.pickle", 'rb'))
+embeddings1930 = pickle.load(open("./data/embeddings1930.pickle", 'rb'))
+embeddings1940 = pickle.load(open("./data/embeddings1940.pickle", 'rb'))
+embeddings1950 = pickle.load(open("./data/embeddings1950.pickle", 'rb'))
+embeddings1960 = pickle.load(open("./data/embeddings1960.pickle", 'rb'))
+embeddings1970 = pickle.load(open("./data/embeddings1970.pickle", 'rb'))
+embeddings1980 = pickle.load(open("./data/embeddings1980.pickle", 'rb'))
+embeddings1990 = pickle.load(open("./data/embeddings1990.pickle", 'rb'))
+
+
+#%% models dictionary
 
 models_all = {
     embeddings1800: 1800,
@@ -58,37 +106,27 @@ models_all = {
     embeddings1990: 1990
 }
 
-models = {
-    embeddings1850: 1850,
-    embeddings1860: 1860,
-    embeddings1870: 1870,
-    embeddings1880: 1880,
-    embeddings1890: 1890,
-    embeddings1900: 1900,
-    embeddings1910: 1910,
-    embeddings1920: 1920,
-    embeddings1930: 1930,
-    embeddings1940: 1940,
-    embeddings1950: 1950,
-    embeddings1960: 1960,
-    embeddings1970: 1970,
-    embeddings1980: 1980,
-    embeddings1990: 1990
-}
+
+
+
+
+#%% define functions
 
 
 # define similarity function for one dimension (Cosine_distance = 1 - cosine_similarity)
 
-def sim_onedim(dim):
+def sim_onedim(dim, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+
     d = []
 
-    for x, y in models.items():
-        d.append(
-            {
-                "year": y,
-                dim: x.n_similarity(keywords['work'], keywords[dim])
-            }
-        )
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            d.append(
+                {
+                    "year": year,
+                    dim: model.n_similarity(keywords['work'], keywords[dim])
+                }
+            )
 
     data = pd.DataFrame(d)
 
@@ -105,19 +143,23 @@ def sim_onedim(dim):
     plt.show()
     plt.close()
 
+
+
 # define similarity function for two dimensions (Cosine_distance = 1 - cosine_similarity)
 
-def sim_twodim(dim1, dim2):
+def sim_twodim(dim1, dim2, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+
     d = []
 
-    for x, y in models.items():
-        d.append(
-            {
-                "year": y,
-                dim1: x.n_similarity(keywords['work'], keywords[dim1]),
-                dim2: x.n_similarity(keywords['work'], keywords[dim2])
-            }
-        )
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            d.append(
+                {
+                    "year": year,
+                    dim1: model.n_similarity(keywords['work'], keywords[dim1]),
+                    dim2: model.n_similarity(keywords['work'], keywords[dim2])
+                }
+            )
 
     data = pd.DataFrame(d)
     data['diff'] = data[dim1] - data[dim2]
@@ -134,6 +176,68 @@ def sim_twodim(dim1, dim2):
     plt.title(dim1 + "-" + dim2)
     plt.show()
     plt.close()
+
+
+# define function to visualize semantic change
+
+def similarplot(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+
+    # get list of all similar words from different periods
+
+    sim_words = []
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            tempsim = model.most_similar(keyword, topn=7)
+            for term, vector in tempsim:
+                sim_words.append(term)
+
+    sim_words = list(set(sim_words))
+
+    # get vectors of similar words in most recent embedding (1990)
+    sim_vectors1990 = np.array([embeddings1990[w] for w in sim_words])
+
+    # get vectors of keyword in all periods and add them to vectors of similar words
+
+    allvectors = sim_vectors1990
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            keyword_vectors = np.array([model[keyword]])
+            allvectors = np.append(allvectors, keyword_vectors, axis=0)
+
+    # reduce dimensions of vectors
+    pca = PCA(n_components=2)
+    two_dim = pca.fit_transform(allvectors)
+
+    # get labels
+    labels = sim_words
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            labels.append(keyword + str(year))
+
+    #plot results
+    plt.scatter(two_dim[:, 0], two_dim[:, 1])
+
+    for i in range(len(sim_words)):
+        plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
+
+    plt.show()
+    plt.close()
+
+
+
+#%%  most similar terms
+
+for x, y in models_all.items():
+    print(y)
+    print(x.most_similar("work"))
+
+# --> work has a different meaning before 1850
+
+#%% visualize word embeddings over time
+
+similarplot("work", 1810, 2000, 60)
 
 
 #%% keywords
@@ -189,27 +293,17 @@ keywords = {
 }
 
 
-
-#%%  most similar terms
-
-for x, y in models_all.items():
-    print(y)
-    print(x.most_similar("work"))
-
-# --> work has a different meaning before 1850
-
-
-#%% results
+#%% association of work with different dimension
 
 sim_onedim('religion')
 
 sim_onedim('male')
 sim_onedim('female')
-sim_twodim('male', 'female')
+sim_twodim('male', 'female', 1850)
 
 sim_onedim('mat')
-sim_onedim('postmat')
-sim_twodim('mat', 'postmat')
+sim_onedim('postmat', 1850)
+sim_twodim('mat', 'postmat', 1850)
 
 sim_onedim('rich')
 sim_onedim('poor')
@@ -234,3 +328,27 @@ sim_onedim('emotion')
 sim_onedim('relations')
 
 sim_onedim('status')
+
+
+
+
+
+
+
+
+
+
+
+
+#%%
+
+
+
+
+
+
+
+
+
+
+
