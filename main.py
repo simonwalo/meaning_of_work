@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 import pickle
 
 
@@ -178,7 +179,7 @@ def sim_twodim(dim1, dim2, rangelow = 1800, rangehigh = 2000, rangestep = 10):
     plt.close()
 
 
-# define function to visualize semantic change
+# define function to visualize semantic change (PCA)
 
 def similarplot(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
 
@@ -227,6 +228,108 @@ def similarplot(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
 
 
 
+
+# define function to visualize semantic change (T-SNE)
+
+def similarplot2(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+
+    # get list of all similar words from different periods
+
+    sim_words = []
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            tempsim = model.most_similar(keyword, topn=7)
+            for term, vector in tempsim:
+                sim_words.append(term)
+
+    sim_words = list(set(sim_words))
+
+    # get vectors of similar words in most recent embedding (1990)
+    sim_vectors1990 = np.array([embeddings1990[w] for w in sim_words])
+
+    # get vectors of keyword in all periods and add them to vectors of similar words
+
+    allvectors = sim_vectors1990
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            keyword_vectors = np.array([model[keyword]])
+            allvectors = np.append(allvectors, keyword_vectors, axis=0)
+
+    # reduce dimensions of vectors
+    tsne = TSNE(n_components=2, learning_rate="auto", init="pca", perplexity=5)
+    two_dim = tsne.fit_transform(allvectors)
+
+    # get labels
+    labels = sim_words
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            labels.append(keyword + str(year))
+
+    #plot results
+    plt.scatter(two_dim[:, 0], two_dim[:, 1])
+
+    for i in range(len(sim_words)):
+        plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
+
+    plt.show()
+    plt.close()
+
+
+
+
+
+# define function to visualize semantic change (PCA mit keyword als passive projektionen)
+
+def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+
+    # get list of all similar words from different periods
+
+    sim_words = []
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            tempsim = model.most_similar(keyword, topn=7)
+            for term, vector in tempsim:
+                sim_words.append(term)
+
+    sim_words = list(set(sim_words))
+
+    # get vectors of similar words in most recent embedding (1990)
+    sim_vectors1990 = np.array([embeddings1990[w] for w in sim_words])
+
+    # get vectors of keyword in all periods and add them to vectors of similar words
+
+    allvectors = sim_vectors1990
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            keyword_vectors = np.array([model[keyword]])
+            allvectors = np.append(allvectors, keyword_vectors, axis=0)
+
+    # "train" PCA model with only similar words
+    pca = PCA(n_components=2)
+    pca_model = pca.fit(sim_vectors1990)
+    two_dim = pca.transform(allvectors)
+
+    # get labels
+    labels = sim_words
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            labels.append(keyword + str(year))
+
+    #plot results
+    plt.scatter(two_dim[:, 0], two_dim[:, 1])
+
+    for i in range(len(sim_words)):
+        plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
+
+    plt.show()
+    plt.close()
+
+
+
 #%%  most similar terms
 
 for x, y in models_all.items():
@@ -237,7 +340,9 @@ for x, y in models_all.items():
 
 #%% visualize word embeddings over time
 
-similarplot("work", 1810, 2000, 60)
+similarplot("work", 1810, 2000, 30) # PCA
+similarplot2("work", 1810, 2000, 30) # T-SNE
+similarplot3("work", 1810, 2000, 30) # PCA mit keyword als passiv
 
 
 #%% keywords
@@ -328,19 +433,6 @@ sim_onedim('emotion')
 sim_onedim('relations')
 
 sim_onedim('status')
-
-
-
-
-
-
-
-
-
-
-
-
-#%%
 
 
 
