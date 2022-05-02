@@ -282,7 +282,7 @@ def similarplot2(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
 
 # define function to visualize semantic change (PCA mit keyword als passive projektionen)
 
-def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, export = False):
 
     # get list of all similar words from different periods
 
@@ -325,6 +325,8 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
     for i in range(len(sim_words)):
         plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
 
+    if export == True:
+        plt.savefig('./output/' + keyword + '_' + str(rangelow) + '-' + str(rangehigh-10) + '.png')
     plt.show()
     plt.close()
 
@@ -342,7 +344,7 @@ for x, y in models_all.items():
 
 similarplot("work", 1810, 2000, 30) # PCA
 similarplot2("work", 1810, 2000, 30) # T-SNE
-similarplot3("work", 1810, 2000, 30) # PCA mit keyword als passiv
+similarplot3("culture", 1810, 2000, 60, export=True) # PCA mit keyword als passiv
 
 
 #%% keywords
