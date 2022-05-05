@@ -146,6 +146,7 @@ def sim_onedim(dim, rangelow = 1800, rangehigh = 2000, rangestep = 10):
 
 
 
+
 # define similarity function for two dimensions (Cosine_distance = 1 - cosine_similarity)
 
 def sim_twodim(dim1, dim2, rangelow = 1800, rangehigh = 2000, rangestep = 10):
@@ -166,15 +167,12 @@ def sim_twodim(dim1, dim2, rangelow = 1800, rangehigh = 2000, rangestep = 10):
     data['diff'] = data[dim1] - data[dim2]
 
     #lineplot
-    plt.plot(data['year'], data['diff'])
-
-    #the trendline
-    z = np.polyfit(data['year'], data['diff'], 1)
-    p = np.poly1d(z)
-    plt.plot(data['year'],p(data['year']),"r--")
+    plt.plot(data['year'], data[dim1], "-b", label=dim1)
+    plt.plot(data['year'], data[dim2], "-r", label=dim2)
+    plt.legend(loc="best")
 
     #show plot
-    plt.title(dim1 + "-" + dim2)
+    plt.title(dim1 + "&" + dim2)
     plt.show()
     plt.close()
 
@@ -412,7 +410,7 @@ sim_onedim('male', 1850)
 sim_onedim('female', 1850)
 sim_twodim('male', 'female', 1850)
 
-sim_onedim('mat')
+sim_onedim('mat', 1850)
 sim_onedim('postmat', 1850)
 sim_twodim('mat', 'postmat', 1850)
 
