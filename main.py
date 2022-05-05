@@ -344,7 +344,7 @@ for x, y in models_all.items():
 
 similarplot("work", 1810, 2000, 30) # PCA
 similarplot2("work", 1810, 2000, 30) # T-SNE
-similarplot3("culture", 1810, 2000, 60, export=True) # PCA mit keyword als passiv
+similarplot3("work", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
 #%% keywords
@@ -396,16 +396,20 @@ keywords = {
     'relations': ["relationship"],
 
     'status': ["prestigious", "honorable", "esteemed", "influential", "reputable", "distinguished",
-               "eminent", "illustrious", "renowned", "acclaimed"]
+               "eminent", "illustrious", "renowned", "acclaimed"],
+
+    'patriot': ["duty", "country", "patriot", "fatherland", "home"],
+
+    'commodity': ["market", "exchange", "trade", "hire", "rent"]
 }
 
 
 #%% association of work with different dimension
 
-sim_onedim('religion')
+sim_onedim('religion', 1850)
 
-sim_onedim('male')
-sim_onedim('female')
+sim_onedim('male', 1850)
+sim_onedim('female', 1850)
 sim_twodim('male', 'female', 1850)
 
 sim_onedim('mat')
@@ -416,26 +420,29 @@ sim_onedim('rich')
 sim_onedim('poor')
 sim_twodim('rich', 'poor')
 
-sim_onedim('affluence')
+sim_onedim('affluence', 1850)
 
-sim_onedim('hard')
+sim_onedim('hard', 1850)
 
-sim_onedim('politics')
+sim_onedim('politics', 1850)
 
-sim_onedim('moral')
+sim_onedim('moral', 1850)
 
-sim_onedim('vocation')
+sim_onedim('vocation', 1850)
 
-sim_onedim('success')
+sim_onedim('success', 1850)
 
-sim_onedim('housework')
+sim_onedim('housework', 1850)
 
-sim_onedim('emotion')
+sim_onedim('emotion', 1850)
 
-sim_onedim('relations')
+sim_onedim('relations', 1850)
 
-sim_onedim('status')
+sim_onedim('status', 1850)
 
+sim_onedim('patriot', 1850)
+
+sim_onedim('commodity', 1850)
 
 
 
