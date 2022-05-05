@@ -385,7 +385,7 @@ keywords = {
     'moral': ['good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
               'virtuous', 'sinful', 'virtue', 'vice'],
 
-    'vocation': ["vocation", "calling"],
+    'vocation': ["vocation", "calling", "meaning", "purpose"],
 
     'success': ["success", "succeed", "failure", "fail"],
 
