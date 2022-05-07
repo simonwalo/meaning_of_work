@@ -297,18 +297,22 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
     # get vectors of similar words in most recent embedding (1990)
     sim_vectors1990 = np.array([embeddings1990[w] for w in sim_words])
 
-    # get vectors of keyword in all periods and add them to vectors of similar words
+    # get vectors of keyword in all periods
 
-    allvectors = sim_vectors1990
+    keyword_vectors = np.zeros(shape=(0,300))
 
     for model, year in models_all.items():
         if year in range(rangelow, rangehigh, rangestep):
-            keyword_vectors = np.array([model[keyword]])
-            allvectors = np.append(allvectors, keyword_vectors, axis=0)
+            temp_keyword_vector = np.array([model[keyword]])
+            keyword_vectors = np.append(keyword_vectors, temp_keyword_vector, axis=0)
+
+    # add keyword vectors from all periods to vectors of similar words 1990
+
+    allvectors = np.append(sim_vectors1990, keyword_vectors, axis=0)
 
     # "train" PCA model with only similar words
     pca = PCA(n_components=2)
-    pca_model = pca.fit(sim_vectors1990)
+    pca.fit(sim_vectors1990)
     two_dim = pca.transform(allvectors)
 
     # get labels
@@ -322,6 +326,15 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
 
     for i in range(len(sim_words)):
         plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
+
+    #plot arrow between keywords
+    # coordinates of keywords = two_dim[star: sim_vectors1990, length: keyword_vectors]
+    # vector to add = coordinate of keyword 1 - coordinate of keyword 2
+
+    for i in range(-2, -(len(keyword_vectors)+1), -1):
+        plt.arrow(two_dim[i,0], two_dim[i,1],
+                  two_dim[i+1, 0] - two_dim[i,0], two_dim[i+1, 1] - two_dim[i,1],
+                  head_width=0.03, length_includes_head=True)
 
     if export == True:
         plt.savefig('./output/' + keyword + '_' + str(rangelow) + '-' + str(rangehigh-10) + '.png')
@@ -340,9 +353,9 @@ for x, y in models_all.items():
 
 #%% visualize word embeddings over time
 
-similarplot("work", 1810, 2000, 30) # PCA
-similarplot2("work", 1810, 2000, 30) # T-SNE
-similarplot3("work", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
+similarplot("gay", 1810, 2000, 60) # PCA
+similarplot2("gay", 1810, 2000, 60) # T-SNE
+similarplot3("culture", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
 #%% keywords
@@ -376,7 +389,9 @@ keywords = {
     'affluence': ["wealth", "wealthy", "rich", "affluence", "affluent",
                   "poor", "poverty", "impoverished", "destitute", "needy"],
 
-    'hard': ["hard", "effort", "strive", "push", "struggle"],
+    'toil': ["hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"],
+
+    'leisure': ["leisure", "ease", "rest"],
 
     'politics': ["party", "politics", "movement", "election"],
 
@@ -420,7 +435,7 @@ sim_twodim('rich', 'poor')
 
 sim_onedim('affluence', 1850)
 
-sim_onedim('hard', 1850)
+sim_twodim('toil', 'leisure', 1850)
 
 sim_onedim('politics', 1850)
 
