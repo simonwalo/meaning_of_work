@@ -280,6 +280,10 @@ def similarplot2(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
 
 # define function to visualize semantic change (PCA mit keyword als passive projektionen)
 
+# Ergänzen: wenn keyword nicht vorhanden --> fehler
+# z.B. embeddings1840['biology'] --> array([0., 0., 0., 0., 0., 0., 0.
+# ergänzen 2: overlapping keywords entwirren: https://github.com/Phlya/adjustText
+
 def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, export = False):
 
     # get list of all similar words from different periods
@@ -328,8 +332,6 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
         plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
 
     #plot arrow between keywords
-    # coordinates of keywords = two_dim[star: sim_vectors1990, length: keyword_vectors]
-    # vector to add = coordinate of keyword 1 - coordinate of keyword 2
 
     for i in range(-2, -(len(keyword_vectors)+1), -1):
         plt.arrow(two_dim[i,0], two_dim[i,1],
@@ -347,7 +349,7 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
 
 for x, y in models_all.items():
     print(y)
-    print(x.most_similar("work"))
+    print(x.most_similar("biology"))
 
 # --> work has a different meaning before 1850
 
@@ -355,7 +357,7 @@ for x, y in models_all.items():
 
 similarplot("gay", 1810, 2000, 60) # PCA
 similarplot2("gay", 1810, 2000, 60) # T-SNE
-similarplot3("culture", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
+similarplot3("computer", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
 #%% keywords
