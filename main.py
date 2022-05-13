@@ -1,4 +1,5 @@
 #%% import packages
+import sys
 
 from gensim.models import KeyedVectors
 import matplotlib.pyplot as plt
@@ -7,7 +8,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 import pickle
-
+from adjustText import adjust_text
 
 #%% load all data in C text format
 
@@ -116,7 +117,7 @@ models_all = {
 
 # define similarity function for one dimension (Cosine_distance = 1 - cosine_similarity)
 
-def sim_onedim(dim, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+def sim_onedim(dim, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
     d = []
 
@@ -149,7 +150,7 @@ def sim_onedim(dim, rangelow = 1800, rangehigh = 2000, rangestep = 10):
 
 # define similarity function for two dimensions (Cosine_distance = 1 - cosine_similarity)
 
-def sim_twodim(dim1, dim2, rangelow = 1800, rangehigh = 2000, rangestep = 10):
+def sim_twodim(dim1, dim2, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
     d = []
 
@@ -175,6 +176,11 @@ def sim_twodim(dim1, dim2, rangelow = 1800, rangehigh = 2000, rangestep = 10):
     plt.title(dim1 + "&" + dim2)
     plt.show()
     plt.close()
+
+
+
+
+
 
 
 # define function to visualize semantic change (PCA)
@@ -280,9 +286,6 @@ def similarplot2(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
 
 # define function to visualize semantic change (PCA mit keyword als passive projektionen)
 
-# Ergänzen: wenn keyword nicht vorhanden --> fehler
-# z.B. embeddings1840['biology'] --> array([0., 0., 0., 0., 0., 0., 0.
-# ergänzen 2: overlapping keywords entwirren: https://github.com/Phlya/adjustText
 
 def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, export = False):
 
@@ -292,9 +295,13 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
 
     for model, year in models_all.items():
         if year in range(rangelow, rangehigh, rangestep):
-            tempsim = model.most_similar(keyword, topn=7)
-            for term, vector in tempsim:
-                sim_words.append(term)
+            if model[keyword].all() == embeddings1840['biology'].all():
+                sys.stderr.write("Term not found in all indicated time periods")
+                sys.exit(1)
+            else:
+                tempsim = model.most_similar(keyword, topn=7)
+                for term, vector in tempsim:
+                    sim_words.append(term)
 
     sim_words = list(set(sim_words))
 
@@ -328,8 +335,8 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
     #plot results
     plt.scatter(two_dim[:, 0], two_dim[:, 1])
 
-    for i in range(len(sim_words)):
-        plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
+    texts = [plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i]) for i in range(len(sim_words))]
+    adjust_text(texts)
 
     #plot arrow between keywords
 
@@ -349,7 +356,7 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
 
 for x, y in models_all.items():
     print(y)
-    print(x.most_similar("biology"))
+    print(x.most_similar("office"))
 
 # --> work has a different meaning before 1850
 
@@ -357,7 +364,7 @@ for x, y in models_all.items():
 
 similarplot("gay", 1810, 2000, 60) # PCA
 similarplot2("gay", 1810, 2000, 60) # T-SNE
-similarplot3("computer", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
+similarplot3("biology", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
 #%% keywords
@@ -415,7 +422,13 @@ keywords = {
 
     'patriot': ["duty", "country", "patriot", "fatherland", "home"],
 
-    'commodity': ["market", "exchange", "trade", "hire", "rent"]
+    'commodity': ["market", "exchange", "trade", "hire", "rent"],
+
+    'farm': ["farm", "field", "animal", "crops"],
+
+    'factory': ["factory", "mill", "plant"],
+
+    'office': ["office", "desk"]
 }
 
 
@@ -429,7 +442,7 @@ sim_twodim('male', 'female', 1850)
 
 sim_onedim('mat', 1850)
 sim_onedim('postmat', 1850)
-sim_twodim('mat', 'postmat', 1850)
+sim_twodim('mat', 'postmat')
 
 sim_onedim('rich')
 sim_onedim('poor')
@@ -458,6 +471,21 @@ sim_onedim('status', 1850)
 sim_onedim('patriot', 1850)
 
 sim_onedim('commodity', 1850)
+
+sim_twodim('office', 'factory')
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
