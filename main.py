@@ -183,6 +183,74 @@ def sim_twodim(dim1, dim2, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
 
 
+# define similarity function for three dimensions (Cosine_distance = 1 - cosine_similarity)
+
+def sim_threedim(dim1, dim2, dim3, percent = False, rangelow = 1850, rangehigh = 2000, rangestep = 10):
+
+    d = []
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            d.append(
+                {
+                    "year": year,
+                    dim1: model.n_similarity(keywords['work'], keywords[dim1]),
+                    dim2: model.n_similarity(keywords['work'], keywords[dim2]),
+                    dim3: model.n_similarity(keywords['work'], keywords[dim3])
+                }
+            )
+
+    data = pd.DataFrame(d)
+
+    if percent = True:
+        print("True")
+
+    else:
+        #lineplot
+        plt.plot(data['year'], data[dim1], "-b", label=dim1)
+        plt.plot(data['year'], data[dim2], "-r", label=dim2)
+        plt.plot(data['year'], data[dim3], "-g", label=dim3)
+
+        plt.legend(loc="best")
+
+        #show plot
+        plt.title(dim1 + "&" + dim2 + "&" + dim3)
+        plt.show()
+        plt.close()
+
+
+def sim_threedim(dim1, dim2, dim3, rangelow = 1850, rangehigh = 2000, rangestep = 10):
+
+    d = []
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            d.append(
+                {
+                    "year": year,
+                    dim1: model.n_similarity(keywords['work'], keywords[dim1]),
+                    dim2: model.n_similarity(keywords['work'], keywords[dim2]),
+                    dim3: model.n_similarity(keywords['work'], keywords[dim3])
+                }
+            )
+
+    data = pd.DataFrame(d)
+
+    #lineplot
+    plt.plot(data['year'], data[dim1], "-b", label=dim1)
+    plt.plot(data['year'], data[dim2], "-r", label=dim2)
+    plt.plot(data['year'], data[dim3], "-g", label=dim3)
+
+    plt.legend(loc="best")
+
+    #show plot
+    plt.title(dim1 + "&" + dim2 + "&" + dim3)
+    plt.show()
+    plt.close()
+
+
+
+
 # define function to visualize semantic change (PCA)
 
 def similarplot(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
@@ -424,11 +492,11 @@ keywords = {
 
     'commodity': ["market", "exchange", "trade", "hire", "rent"],
 
-    'farm': ["farm", "field", "animal", "crops"],
+    'sector1': ["agriculture", "farming", "logging", "fishing", "forestry", "mining"],
 
-    'factory': ["factory", "mill", "plant"],
+    'sector2': ["manufacturing", "textile", "car", "handicraft"],
 
-    'office': ["office", "desk"]
+    'sector3': ["service", "social", "information", "advice", "access"],
 }
 
 
@@ -472,7 +540,7 @@ sim_onedim('patriot', 1850)
 
 sim_onedim('commodity', 1850)
 
-sim_twodim('office', 'factory')
+sim_threedim('sector1', 'sector2', 'sector3')
 
 
 
@@ -482,14 +550,39 @@ sim_twodim('office', 'factory')
 
 
 
+#%% test area
 
 
 
 
+# stacked area chart for sectors
 
+d = []
 
+for model, year in models_all.items():
+    if year in range(1850, 2000, 10):
+        d.append(
+            {
+                "year": year,
+                "sector1": model.n_similarity(keywords['work'], keywords["sector1"]),
+                "sector2": model.n_similarity(keywords['work'], keywords["sector2"]),
+                "sector3": model.n_similarity(keywords['work'], keywords["sector3"])
+            }
+        )
 
+data = pd.DataFrame(d)
 
+data['total'] = data['sector1'] + data['sector2'] + data['sector3']
+
+data['sector1'] = data['sector1'].divide(data['total'])
+data['sector2'] = data['sector2'].divide(data['total'])
+data['sector3'] = data['sector3'].divide(data['total'])
+
+plt.stackplot(data["year"], data["sector1"], data["sector2"], data["sector3"], labels=['sector1','sector2','sector3'])
+plt.legend(loc='upper left')
+plt.margins(0,0)
+plt.title('100 % stacked area chart')
+plt.show()
 
 
 
