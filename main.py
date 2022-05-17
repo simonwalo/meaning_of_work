@@ -469,11 +469,13 @@ for x, y in models_all.items():
 #%% visualize word embeddings over time
 
 similarplot("gay", 1810, 2000, 60) # PCA
-similarplot2("gay", 1810, 2000, 60) # T-SNE
+similarplot2("work", 1810, 2000, 60) # T-SNE
 similarplot3("work", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
 #%% keywords
+
+#### AUFLÖSEN UND NACH UNTEN VERSCHIEBEN!!!
 
 keywords = {
     "work":
@@ -550,56 +552,114 @@ keywords = {
 
 #%% association of work with different dimension
 
-sim_onedim('religion', 1850)
+# smith: toil (einzelne Begriffe anzeigen?)
 
-sim_onedim('male', 1850)
-sim_onedim('female', 1850)
-sim_twodim('male', 'female', 1850)
+###### NEU: REGRESSIONSGERADE DURCH KURVE ERSETZEN!!
+
+sim_twodim('toil', 'leisure', 1850)
+
+# toil ist stark physisch geprägt --> andere negative Begriffe zum Vergleich!
+
+sim_onedim('emotion', 1850)
+
+sim_oneterm('duty') # auch teil von "patriot"
+
+sim_onedim('commodity', 1850) # nicht sehr spannend
+
+
+
+# marx: alienation (extrinsic vs. intrinsic)
 
 sim_onedim('mat', 1850)
 sim_onedim('postmat', 1850)
 sim_twodim('mat', 'postmat')
 
+sim_onedim('status', 1850)
+
+
+
+
+
+
+# weber: wealth & religion
+
 sim_onedim('rich')
 sim_onedim('poor')
 sim_twodim('rich', 'poor')
 
+sim_onedim('success', 1850)
+
 sim_onedim('affluence', 1850)
-
-sim_twodim('toil', 'leisure', 1850)
-
-sim_onedim('politics', 1850)
-
 sim_onedim('moral', 1850)
+# --> Piketty!
+
+sim_onedim('religion', 1850)
 
 sim_onedim('vocation', 1850)
 
-sim_onedim('success', 1850)
 
-sim_onedim('housework', 1850)
-
-sim_onedim('emotion')
-
-sim_onedim('relations', 1850)
-
-sim_onedim('status', 1850)
+# weber: was läuft bei WK?
 
 sim_onedim('patriot', 1850)
 
-sim_onedim('commodity', 1850)
 
-sim_threedim('sector1', 'sector2', 'sector3')
 
-sim_threedim('mat', 'status', 'emotion')
 
-sim_threedim('computer', 'plow', 'telephone')
+# VALIDATION
+
+# faktisch
+
+# connotation von Arbeit mit mann/frau
+
+# NEU: DIFFERENZ MALE - FEMALE!! (sonst allg. Konnotation mit Geschlecht auch dabei)
+
+sim_onedim('male', 1850)
+sim_onedim('female', 1850)
+sim_twodim('male', 'female', 1850)
+
+# typische arbeitsgeräte für verschiedene epochen
+
+# Neu: Chart mit Kurven aller drei Begriffe
 
 sim_oneterm('plow')
 sim_oneterm('telephone')
 sim_oneterm('computer')
 
+# historisches wachstum von sektoren
+
+sim_threedim('sector1', 'sector2', 'sector3')
+
+# typisch weibliche/männliche Berufe
 
 sim_occs('mechanic', 'carpenter', 'engineer', 'nurse', "dancer", "housekeeper", "librarian")
+
+# SEMANTIC DRIFT: housework --> work
+
+sim_onedim('housework', 1850)
+
+# DISKURS: Arbeiterbewegung
+
+sim_onedim('politics', 1850)
+
+
+
+
+
+# OTHERS:
+
+
+# type of work: emotional work & beziehungsarbeit
+
+sim_onedim('emotion')
+
+sim_onedim('relations', 1850)
+
+
+
+
+
+
+
 
 
 
