@@ -148,6 +148,39 @@ def sim_onedim(dim, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
 
 
+# define similarity function for one term (Cosine_distance = 1 - cosine_similarity)
+
+def sim_oneterm(term, rangelow = 1850, rangehigh = 2000, rangestep = 10):
+
+    d = []
+
+    for model, year in models_all.items():
+        if year in range(rangelow, rangehigh, rangestep):
+            d.append(
+                {
+                    "year": year,
+                    term: model.n_similarity(keywords['work'], [term])
+                }
+            )
+
+    data = pd.DataFrame(d)
+
+    # lineplot
+    plt.plot(data['year'], data[term])
+
+    # the trendline
+    z = np.polyfit(data['year'], data[term], 1)
+    p = np.poly1d(z)
+    plt.plot(data['year'], p(data['year']), "r--")
+
+    # show plot
+    plt.title(term)
+    plt.show()
+    plt.close()
+
+
+
+
 # define similarity function for two dimensions (Cosine_distance = 1 - cosine_similarity)
 
 def sim_twodim(dim1, dim2, rangelow = 1850, rangehigh = 2000, rangestep = 10):
@@ -183,41 +216,6 @@ def sim_twodim(dim1, dim2, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
 
 
-# define similarity function for three dimensions (Cosine_distance = 1 - cosine_similarity)
-
-def sim_threedim(dim1, dim2, dim3, percent = False, rangelow = 1850, rangehigh = 2000, rangestep = 10):
-
-    d = []
-
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            d.append(
-                {
-                    "year": year,
-                    dim1: model.n_similarity(keywords['work'], keywords[dim1]),
-                    dim2: model.n_similarity(keywords['work'], keywords[dim2]),
-                    dim3: model.n_similarity(keywords['work'], keywords[dim3])
-                }
-            )
-
-    data = pd.DataFrame(d)
-
-    if percent = True:
-        print("True")
-
-    else:
-        #lineplot
-        plt.plot(data['year'], data[dim1], "-b", label=dim1)
-        plt.plot(data['year'], data[dim2], "-r", label=dim2)
-        plt.plot(data['year'], data[dim3], "-g", label=dim3)
-
-        plt.legend(loc="best")
-
-        #show plot
-        plt.title(dim1 + "&" + dim2 + "&" + dim3)
-        plt.show()
-        plt.close()
-
 
 def sim_threedim(dim1, dim2, dim3, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
@@ -247,6 +245,46 @@ def sim_threedim(dim1, dim2, dim3, rangelow = 1850, rangehigh = 2000, rangestep 
     plt.title(dim1 + "&" + dim2 + "&" + dim3)
     plt.show()
     plt.close()
+
+
+
+
+
+
+# define similarity function for occupations with gender (Cosine_distance = 1 - cosine_similarity)
+
+def sim_occs(*occs):
+
+    diffdata = pd.DataFrame(models_all.values())
+    diffdata.rename(columns={0: 'year'}, inplace=True)
+
+    for occ in occs:
+        d = []
+        for model, year in models_all.items():
+            if year in range(1800, 2000, 10):
+                d.append(
+                    {
+                        "year": year,
+                        'male': model.n_similarity(keywords['male'], [occ]),
+                        'female': model.n_similarity(keywords['female'], [occ])
+                    }
+                )
+        data = pd.DataFrame(d)
+        data['diff'] = data['male'] - data['female']
+        diffdata[occ] = data['diff']
+
+    # lineplot
+    for occ in occs:
+        plt.plot(diffdata['year'], diffdata[occ], label=occ)
+
+    # show plot
+    plt.title('male-female connotation by occs')
+    plt.legend(loc="best")
+    plt.axhline(0)
+    plt.show()
+    plt.close()
+
+
 
 
 
@@ -432,7 +470,7 @@ for x, y in models_all.items():
 
 similarplot("gay", 1810, 2000, 60) # PCA
 similarplot2("gay", 1810, 2000, 60) # T-SNE
-similarplot3("biology", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
+similarplot3("work", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
 #%% keywords
@@ -481,7 +519,8 @@ keywords = {
 
     'housework': ["housework", "household"],
 
-    'emotion': ["emotion", "emotional"],
+    'emotion': ["pleasant", "interesting", "boring", "fulfilling", "meaningful", "meaningless",
+                "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"],
 
     'relations': ["relationship"],
 
@@ -497,6 +536,15 @@ keywords = {
     'sector2': ["manufacturing", "textile", "car", "handicraft"],
 
     'sector3': ["service", "social", "information", "advice", "access"],
+
+    'interesting': ["interesting"],
+
+    'useful': ["useful", "society"],
+
+    'duty': ["duty"],
+
+    'social': ["colleague", "friend", "people"],
+
 }
 
 
@@ -530,7 +578,7 @@ sim_onedim('success', 1850)
 
 sim_onedim('housework', 1850)
 
-sim_onedim('emotion', 1850)
+sim_onedim('emotion')
 
 sim_onedim('relations', 1850)
 
@@ -541,6 +589,22 @@ sim_onedim('patriot', 1850)
 sim_onedim('commodity', 1850)
 
 sim_threedim('sector1', 'sector2', 'sector3')
+
+sim_threedim('mat', 'status', 'emotion')
+
+sim_threedim('computer', 'plow', 'telephone')
+
+sim_oneterm('plow')
+sim_oneterm('telephone')
+sim_oneterm('computer')
+
+
+sim_occs('mechanic', 'carpenter', 'engineer', 'nurse', "dancer", "housekeeper", "librarian")
+
+
+
+
+
 
 
 
@@ -583,6 +647,13 @@ plt.legend(loc='upper left')
 plt.margins(0,0)
 plt.title('100 % stacked area chart')
 plt.show()
+
+
+
+
+
+
+
 
 
 
