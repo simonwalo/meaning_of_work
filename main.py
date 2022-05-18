@@ -9,6 +9,8 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 import pickle
 from adjustText import adjust_text
+from scipy.interpolate import interp1d
+
 
 #%% load all data in C text format
 
@@ -132,19 +134,20 @@ def sim_onedim(dim, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
     data = pd.DataFrame(d)
 
-    # lineplot
-    plt.plot(data['year'], data[dim])
-
     # the trendline
-    z = np.polyfit(data['year'], data[dim], 1)
-    p = np.poly1d(z)
-    plt.plot(data['year'], p(data['year']), "r--")
+    x = data['year'].tolist()
+    y = data[dim].tolist()
+
+    fun = interp1d(x, y, kind='cubic')
+
+    xnew = np.linspace(rangelow, (rangehigh-10), 100)
+
+    plt.plot(xnew, fun(xnew), '-', x, y, 'o')
 
     # show plot
     plt.title(dim)
     plt.show()
     plt.close()
-
 
 
 
@@ -165,13 +168,15 @@ def sim_oneterm(term, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
     data = pd.DataFrame(d)
 
-    # lineplot
-    plt.plot(data['year'], data[term])
-
     # the trendline
-    z = np.polyfit(data['year'], data[term], 1)
-    p = np.poly1d(z)
-    plt.plot(data['year'], p(data['year']), "r--")
+    x = data['year'].tolist()
+    y = data[term].tolist()
+
+    fun = interp1d(x, y, kind='cubic')
+
+    xnew = np.linspace(rangelow, (rangehigh-10), 100)
+
+    plt.plot(xnew, fun(xnew), '-', x, y, 'o')
 
     # show plot
     plt.title(term)
@@ -183,7 +188,7 @@ def sim_oneterm(term, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
 # define similarity function for two dimensions (Cosine_distance = 1 - cosine_similarity)
 
-def sim_twodim(dim1, dim2, rangelow = 1850, rangehigh = 2000, rangestep = 10):
+def sim_twodim(dim1, dim2, diff = False, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
     d = []
 
@@ -200,15 +205,42 @@ def sim_twodim(dim1, dim2, rangelow = 1850, rangehigh = 2000, rangestep = 10):
     data = pd.DataFrame(d)
     data['diff'] = data[dim1] - data[dim2]
 
-    #lineplot
-    plt.plot(data['year'], data[dim1], "-b", label=dim1)
-    plt.plot(data['year'], data[dim2], "-r", label=dim2)
-    plt.legend(loc="best")
+    # the trendline
 
-    #show plot
-    plt.title(dim1 + "&" + dim2)
-    plt.show()
-    plt.close()
+    if diff==True:
+        x = data['year'].tolist()
+        y = data['diff'].tolist()
+
+        fun = interp1d(x, y, kind='cubic')
+        xnew = np.linspace(rangelow, (rangehigh-10), 100)
+
+        plt.plot(xnew, fun(xnew), "-b")
+
+        plt.title(dim1 + "-" + dim2)
+        plt.show()
+        plt.close()
+
+    else:
+        x = data['year'].tolist()
+        y1 = data[dim1].tolist()
+        y2 = data[dim2].tolist()
+
+        fun1 = interp1d(x, y1, kind='cubic')
+        fun2 = interp1d(x, y2, kind='cubic')
+
+        xnew = np.linspace(rangelow, (rangehigh-10), 100)
+
+        plt.plot(xnew, fun1(xnew), "-b", label=dim1)
+        plt.plot(x, y1, 'bo')
+        plt.plot(xnew, fun2(xnew), "-r", label=dim2)
+        plt.plot(x, y2, 'ro')
+
+        plt.legend(loc="best")
+
+        #show plot
+        plt.title(dim1 + "&" + dim2)
+        plt.show()
+        plt.close()
 
 
 
@@ -217,7 +249,8 @@ def sim_twodim(dim1, dim2, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
 
 
-def sim_threedim(dim1, dim2, dim3, rangelow = 1850, rangehigh = 2000, rangestep = 10):
+
+def sim_threedim(dim1, dim2, dim3, trend = 3, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
     d = []
 
@@ -234,14 +267,61 @@ def sim_threedim(dim1, dim2, dim3, rangelow = 1850, rangehigh = 2000, rangestep 
 
     data = pd.DataFrame(d)
 
-    #lineplot
-    plt.plot(data['year'], data[dim1], "-b", label=dim1)
-    plt.plot(data['year'], data[dim2], "-r", label=dim2)
-    plt.plot(data['year'], data[dim3], "-g", label=dim3)
+    # the trendline
 
-    plt.legend(loc="best")
+    if trend == 3:
+
+        x = data['year'].tolist()
+        y1 = data[dim1].tolist()
+        y2 = data[dim2].tolist()
+        y3 = data[dim3].tolist()
+
+        fun1 = interp1d(x, y1, kind='cubic')
+        fun2 = interp1d(x, y2, kind='cubic')
+        fun3 = interp1d(x, y3, kind='cubic')
+
+
+        xnew = np.linspace(rangelow, (rangehigh - 10), 100)
+
+        plt.plot(xnew, fun1(xnew), "-b", label=dim1)
+        plt.plot(x, y1, 'bo')
+        plt.plot(xnew, fun2(xnew), "-r", label=dim2)
+        plt.plot(x, y2, 'ro')
+        plt.plot(xnew, fun3(xnew), "-g", label=dim3)
+        plt.plot(x, y3, 'go')
+
+
+    elif trend == 2:
+
+        z1 = np.polyfit(data['year'], data[dim1], 2)
+        z2 = np.polyfit(data['year'], data[dim2], 2)
+        z3 = np.polyfit(data['year'], data[dim3], 2)
+
+        p1 = np.poly1d(z1)
+        p2 = np.poly1d(z2)
+        p3 = np.poly1d(z3)
+
+        plt.plot(data['year'], p1(data['year']), "r--", label=dim1)
+        plt.plot(data['year'], p2(data['year']), "b--", label=dim2)
+        plt.plot(data['year'], p3(data['year']), "g--", label=dim3)
+
+    elif trend == 1:
+
+        z1 = np.polyfit(data['year'], data[dim1], 1)
+        z2 = np.polyfit(data['year'], data[dim2], 1)
+        z3 = np.polyfit(data['year'], data[dim3], 1)
+
+        p1 = np.poly1d(z1)
+        p2 = np.poly1d(z2)
+        p3 = np.poly1d(z3)
+
+        plt.plot(data['year'], p1(data['year']), "r--", label=dim1)
+        plt.plot(data['year'], p2(data['year']), "b--", label=dim2)
+        plt.plot(data['year'], p3(data['year']), "g--", label=dim3)
+
 
     #show plot
+    plt.legend(loc="best")
     plt.title(dim1 + "&" + dim2 + "&" + dim3)
     plt.show()
     plt.close()
@@ -473,108 +553,110 @@ similarplot2("work", 1810, 2000, 60) # T-SNE
 similarplot3("work", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
-#%% keywords
 
-#### AUFLÖSEN UND NACH UNTEN VERSCHIEBEN!!!
 
-keywords = {
-    "work":
-        ["work", "works", "worked", "working",
-         "job", "jobs",
-         "career", "careers",
-         "profession", "professions", "professional",
-         "occupation", "occupations",
-         "employment", "employed",
-         "labor", "labors"],
 
-    "male":
-        ["male", "man", "boy", "brother", "he", "him", "his", "son"],
-    "female":
-        ["female", "woman", "girl", "sister", "she", "her", "hers", "daughter"],
-
-    "religion":
-        ["redemption", "salvation"],
-
-    "mat":
-        ["earn", "earns", "earning", "earnings",
-         "wage", "wages", "salary", "income", "remuneration", "secure", "pay"],
-    'postmat':
-        ["interesting", "boring", "fulfilling", "meaningful", "meaningless"],
-
-    'rich': ["wealth", "wealthy", "rich", "affluence", "affluent"],
-    'poor': ["poor", "poverty", "impoverished", "destitute", "needy"],
-    'affluence': ["wealth", "wealthy", "rich", "affluence", "affluent",
-                  "poor", "poverty", "impoverished", "destitute", "needy"],
-
-    'toil': ["hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"],
-
-    'leisure': ["leisure", "ease", "rest"],
-
-    'politics': ["party", "politics", "movement", "election"],
-
-    'moral': ['good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
-              'virtuous', 'sinful', 'virtue', 'vice'],
-
-    'vocation': ["vocation", "calling", "meaning", "purpose"],
-
-    'success': ["success", "succeed", "failure", "fail"],
-
-    'housework': ["housework", "household"],
-
-    'emotion': ["pleasant", "interesting", "boring", "fulfilling", "meaningful", "meaningless",
-                "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"],
-
-    'relations': ["relationship"],
-
-    'status': ["prestigious", "honorable", "esteemed", "influential", "reputable", "distinguished",
-               "eminent", "illustrious", "renowned", "acclaimed"],
-
-    'patriot': ["duty", "country", "patriot", "fatherland", "home"],
-
-    'commodity': ["market", "exchange", "trade", "hire", "rent"],
-
-    'sector1': ["agriculture", "farming", "logging", "fishing", "forestry", "mining"],
-
-    'sector2': ["manufacturing", "textile", "car", "handicraft"],
-
-    'sector3': ["service", "social", "information", "advice", "access"],
-
-    'interesting': ["interesting"],
-
-    'useful': ["useful", "society"],
-
-    'duty': ["duty"],
-
-    'social': ["colleague", "friend", "people"],
-
-}
 
 
 #%% association of work with different dimension
 
+# set up dictionary and define "work"
+
+keywords = {}
+
+keywords['work'] = [
+    "work", "works", "worked", "working","job", "jobs",
+    "career", "careers",
+    "profession", "professions", "professional",
+    "occupation", "occupations",
+    "employment", "employed",
+    "labor", "labors"
+]
+
+
 # smith: toil (einzelne Begriffe anzeigen?)
 
-###### NEU: REGRESSIONSGERADE DURCH KURVE ERSETZEN!!
+keywords['toil'] = [
+    "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"
+]
+sim_onedim('toil', 1850)
 
-sim_twodim('toil', 'leisure', 1850)
+keywords['hard'] = ['hard']
+keywords['struggle'] = ['struggle']
+keywords['toil'] = ['toil']
+keywords['trouble'] = ['trouble']
+keywords['suffer'] = ['suffer']
+keywords['endure'] = ['endure']
+keywords['arduous'] = ['arduous']
+keywords['strenuous'] = ['strenuous']
 
-# toil ist stark physisch geprägt --> andere negative Begriffe zum Vergleich!
+sim_threedim('hard', 'struggle', 'toil', trend=2)
+sim_threedim('trouble', 'suffer', 'endure', trend=2)
+sim_threedim('arduous', 'strenuous', 'toil', trend=2)
 
+
+
+keywords['fun'] = ["fun", "enjoy", "pleasant"]
+
+keywords['leisure'] = ["leisure", "ease", "rest"]
+sim_onedim('leisure')
+
+sim_twodim('toil', 'fun', 1850)
+
+keywords['emotion'] = [
+    "pleasant", "interesting", "boring", "fulfilling", "meaningful", "meaningless",
+    "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"
+]
 sim_onedim('emotion', 1850)
+
+keywords['commodity'] = [
+    "market", "exchange", "trade", "hire", "rent"
+]
+sim_onedim('commodity', 1850) # nicht sehr spannend
 
 sim_oneterm('duty') # auch teil von "patriot"
 
-sim_onedim('commodity', 1850) # nicht sehr spannend
+sim_oneterm('pleasant')
+
+
+
+
+
+
+
+
 
 
 
 # marx: alienation (extrinsic vs. intrinsic)
 
+keywords['mat'] = [
+                      "earn", "earns", "earning", "earnings",
+                      "wage", "wages", "salary", "income", "remuneration", "secure", "pay"
+]
+keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless"]
+
 sim_onedim('mat', 1850)
 sim_onedim('postmat', 1850)
 sim_twodim('mat', 'postmat')
 
+keywords['useful'] = ["useful", "society"]
+sim_onedim('useful', 1850)
+
+
+keywords['status'] = [
+    "prestigious", "honorable", "esteemed", "influential", "reputable", "distinguished",
+    "eminent", "illustrious", "renowned", "acclaimed"
+]
 sim_onedim('status', 1850)
+
+keywords['social'] = ["colleague", "friend", "people"]
+sim_onedim('social', 1850)
+
+
+
+
+
 
 
 
@@ -583,23 +665,33 @@ sim_onedim('status', 1850)
 
 # weber: wealth & religion
 
-sim_onedim('rich')
-sim_onedim('poor')
+keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
+keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
 sim_twodim('rich', 'poor')
 
+keywords['affluence'] = keywords['rich'] + keywords['poor']
+sim_onedim('affluence', 1850) # --> Piketty!
+
+keywords['success'] = ["success", "succeed", "failure", "fail"]
 sim_onedim('success', 1850)
 
-sim_onedim('affluence', 1850)
-sim_onedim('moral', 1850)
-# --> Piketty!
-
+keywords['religion'] = ["redemption", "salvation"]
 sim_onedim('religion', 1850)
 
+keywords['vocation'] = ["vocation", "calling", "meaning", "purpose"]
 sim_onedim('vocation', 1850)
 
+keywords['moral'] = [
+    'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
+    'virtuous', 'sinful', 'virtue', 'vice'
+]
+sim_onedim('moral', 1850) # --> Piketty!
 
-# weber: was läuft bei WK?
 
+
+# Weber: was läuft bei WK?
+
+keywords['patriot'] = ["duty", "country", "patriot", "fatherland", "home"]
 sim_onedim('patriot', 1850)
 
 
@@ -611,48 +703,63 @@ sim_onedim('patriot', 1850)
 
 # connotation von Arbeit mit mann/frau
 
-# NEU: DIFFERENZ MALE - FEMALE!! (sonst allg. Konnotation mit Geschlecht auch dabei)
+keywords['male'] = ["male", "man", "boy", "brother", "he", "him", "his", "son"]
+keywords['female'] = ["female", "woman", "girl", "sister", "she", "her", "hers", "daughter"]
 
 sim_onedim('male', 1850)
 sim_onedim('female', 1850)
-sim_twodim('male', 'female', 1850)
+sim_twodim('male', 'female', diff=False)
+sim_twodim('male', 'female', diff=True)
 
 # typische arbeitsgeräte für verschiedene epochen
 
-# Neu: Chart mit Kurven aller drei Begriffe
+keywords['plow'] = ['plow']
+keywords['telephone'] = ['telephone']
+keywords['computer'] = ['computer']
 
-sim_oneterm('plow')
-sim_oneterm('telephone')
-sim_oneterm('computer')
+sim_onedim('plow')
+sim_onedim('telephone')
+sim_onedim('computer')
+
+sim_threedim('plow', 'telephone', 'computer', trend=2)
+
 
 # historisches wachstum von sektoren
 
-sim_threedim('sector1', 'sector2', 'sector3')
+keywords['sector1'] = ["agriculture", "farming", "logging", "fishing", "forestry", "mining"]
+
+keywords['sector2'] = ["manufacturing", "textile", "car", "handicraft"]
+
+keywords['sector3'] = ["service", "social", "information", "advice", "access"]
+
+sim_threedim('sector1', 'sector2', 'sector3', trend=2)
 
 # typisch weibliche/männliche Berufe
 
-sim_occs('mechanic', 'carpenter', 'engineer', 'nurse', "dancer", "housekeeper", "librarian")
+sim_occs('mechanic', 'carpenter', 'engineer', 'nurse', "dancer", "housekeeper")
 
-# SEMANTIC DRIFT: housework --> work
+# SEMANTIC DRIFT
 
+# housework --> work
+
+keywords['housework'] = ["housework", "household"]
 sim_onedim('housework', 1850)
+
+# beziehungsarbeit
+
+keywords['relations'] = ["relationship"]
+sim_onedim('relations', 1850)
 
 # DISKURS: Arbeiterbewegung
 
+keywords['politics'] = ["party", "politics", "movement", "election"]
 sim_onedim('politics', 1850)
 
 
 
 
 
-# OTHERS:
 
-
-# type of work: emotional work & beziehungsarbeit
-
-sim_onedim('emotion')
-
-sim_onedim('relations', 1850)
 
 
 
@@ -707,6 +814,8 @@ plt.legend(loc='upper left')
 plt.margins(0,0)
 plt.title('100 % stacked area chart')
 plt.show()
+
+
 
 
 
