@@ -1,8 +1,8 @@
 #%% import packages
 import sys
-
 from gensim.models import KeyedVectors
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import cm
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
@@ -117,40 +117,6 @@ models_all = {
 #%% define functions
 
 
-# define similarity function for one dimension (Cosine_distance = 1 - cosine_similarity)
-
-def sim_onedim(dim, rangelow = 1850, rangehigh = 2000, rangestep = 10):
-
-    d = []
-
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            d.append(
-                {
-                    "year": year,
-                    dim: model.n_similarity(keywords['work'], keywords[dim])
-                }
-            )
-
-    data = pd.DataFrame(d)
-
-    # the trendline
-    x = data['year'].tolist()
-    y = data[dim].tolist()
-
-    fun = interp1d(x, y, kind='cubic')
-
-    xnew = np.linspace(rangelow, (rangehigh-10), 100)
-
-    plt.plot(xnew, fun(xnew), '-', x, y, 'o')
-
-    # show plot
-    plt.title(dim)
-    plt.show()
-    plt.close()
-
-
-
 # define similarity function for one term (Cosine_distance = 1 - cosine_similarity)
 
 def sim_oneterm(term, rangelow = 1850, rangehigh = 2000, rangestep = 10):
@@ -185,147 +151,89 @@ def sim_oneterm(term, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
 
 
+# define similarity function for n dimensions
 
-# define similarity function for two dimensions (Cosine_distance = 1 - cosine_similarity)
+def simdim(*dims, trend = 3, diff = False, rangelow = 1850, rangehigh = 2000, rangestep = 10):
 
-def sim_twodim(dim1, dim2, diff = False, rangelow = 1850, rangehigh = 2000, rangestep = 10):
+    data = pd.DataFrame()
+    data['year'] = range(rangelow, rangehigh, rangestep)
 
-    d = []
+    for dim in dims:
+        d = []
+        for model, year in models_all.items():
+            if year in range(rangelow, rangehigh, rangestep):
+                d.append(model.n_similarity(keywords['work'], keywords[dim]))
+        data[dim] = d
 
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            d.append(
-                {
-                    "year": year,
-                    dim1: model.n_similarity(keywords['work'], keywords[dim1]),
-                    dim2: model.n_similarity(keywords['work'], keywords[dim2])
-                }
-            )
-
-    data = pd.DataFrame(d)
-    data['diff'] = data[dim1] - data[dim2]
-
-    # the trendline
-
-    if diff==True:
-        x = data['year'].tolist()
-        y = data['diff'].tolist()
-
-        fun = interp1d(x, y, kind='cubic')
-        xnew = np.linspace(rangelow, (rangehigh-10), 100)
-
-        plt.plot(xnew, fun(xnew), "-b")
-
-        plt.title(dim1 + "-" + dim2)
-        plt.show()
-        plt.close()
-
-    else:
-        x = data['year'].tolist()
-        y1 = data[dim1].tolist()
-        y2 = data[dim2].tolist()
-
-        fun1 = interp1d(x, y1, kind='cubic')
-        fun2 = interp1d(x, y2, kind='cubic')
-
-        xnew = np.linspace(rangelow, (rangehigh-10), 100)
-
-        plt.plot(xnew, fun1(xnew), "-b", label=dim1)
-        plt.plot(x, y1, 'bo')
-        plt.plot(xnew, fun2(xnew), "-r", label=dim2)
-        plt.plot(x, y2, 'ro')
-
-        plt.legend(loc="best")
-
-        #show plot
-        plt.title(dim1 + "&" + dim2)
-        plt.show()
-        plt.close()
-
-
-
-
-
-
-
-
-
-def sim_threedim(dim1, dim2, dim3, trend = 3, rangelow = 1850, rangehigh = 2000, rangestep = 10):
-
-    d = []
-
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            d.append(
-                {
-                    "year": year,
-                    dim1: model.n_similarity(keywords['work'], keywords[dim1]),
-                    dim2: model.n_similarity(keywords['work'], keywords[dim2]),
-                    dim3: model.n_similarity(keywords['work'], keywords[dim3])
-                }
-            )
-
-    data = pd.DataFrame(d)
+    if len(dims)==2:
+        data['diff'] = data.iloc[:, 1]-data.iloc[:, 2]
 
     # the trendline
 
     if trend == 3:
 
         x = data['year'].tolist()
-        y1 = data[dim1].tolist()
-        y2 = data[dim2].tolist()
-        y3 = data[dim3].tolist()
-
-        fun1 = interp1d(x, y1, kind='cubic')
-        fun2 = interp1d(x, y2, kind='cubic')
-        fun3 = interp1d(x, y3, kind='cubic')
-
-
         xnew = np.linspace(rangelow, (rangehigh - 10), 100)
 
-        plt.plot(xnew, fun1(xnew), "-b", label=dim1)
-        plt.plot(x, y1, 'bo')
-        plt.plot(xnew, fun2(xnew), "-r", label=dim2)
-        plt.plot(x, y2, 'ro')
-        plt.plot(xnew, fun3(xnew), "-g", label=dim3)
-        plt.plot(x, y3, 'go')
+        n = len(dims)
+        colors = iter(cm.rainbow(np.linspace(0, 1, n)))
+
+        if diff == True:
+            y = data['diff'].tolist()
+            fun = interp1d(x, y, kind='cubic')
+            plt.plot(xnew, fun(xnew), "-", label='diff')
+            plt.plot(x, y, 'o')
+
+        elif diff == False:
+            for dim in dims:
+                y = data[dim].tolist()
+                fun = interp1d(x, y, kind='cubic')
+                color=next(colors)
+                plt.plot(xnew, fun(xnew), "-", color=color, label=dim)
+                plt.plot(x, y, 'o', color=color)
 
 
     elif trend == 2:
 
-        z1 = np.polyfit(data['year'], data[dim1], 2)
-        z2 = np.polyfit(data['year'], data[dim2], 2)
-        z3 = np.polyfit(data['year'], data[dim3], 2)
+        n = len(dims)
+        colors = iter(cm.rainbow(np.linspace(0, 1, n)))
 
-        p1 = np.poly1d(z1)
-        p2 = np.poly1d(z2)
-        p3 = np.poly1d(z3)
+        if diff == True:
+            z = np.polyfit(data['year'], data['diff'], 2)
+            p = np.poly1d(z)
+            plt.plot(data['year'], p(data['year']), label='diff')
 
-        plt.plot(data['year'], p1(data['year']), "r--", label=dim1)
-        plt.plot(data['year'], p2(data['year']), "b--", label=dim2)
-        plt.plot(data['year'], p3(data['year']), "g--", label=dim3)
+        elif diff == False:
+            for dim in dims:
+                z = np.polyfit(data['year'], data[dim], 2)
+                p = np.poly1d(z)
+                color = next(colors)
+                plt.plot(data['year'], p(data['year']), color=color, label=dim)
+
 
     elif trend == 1:
 
-        z1 = np.polyfit(data['year'], data[dim1], 1)
-        z2 = np.polyfit(data['year'], data[dim2], 1)
-        z3 = np.polyfit(data['year'], data[dim3], 1)
+        n = len(dims)
+        colors = iter(cm.rainbow(np.linspace(0, 1, n)))
 
-        p1 = np.poly1d(z1)
-        p2 = np.poly1d(z2)
-        p3 = np.poly1d(z3)
+        if diff == True:
+            z = np.polyfit(data['year'], data['diff'], 1)
+            p = np.poly1d(z)
+            plt.plot(data['year'], p(data['year']), label='diff')
 
-        plt.plot(data['year'], p1(data['year']), "r--", label=dim1)
-        plt.plot(data['year'], p2(data['year']), "b--", label=dim2)
-        plt.plot(data['year'], p3(data['year']), "g--", label=dim3)
-
+        elif diff == False:
+            for dim in dims:
+                z = np.polyfit(data['year'], data[dim], 1)
+                p = np.poly1d(z)
+                color = next(colors)
+                plt.plot(data['year'], p(data['year']), color=color, label=dim)
 
     #show plot
-    plt.legend(loc="best")
-    plt.title(dim1 + "&" + dim2 + "&" + dim3)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.title("Association of dimension(s) with work")
+    plt.tight_layout()
     plt.show()
     plt.close()
-
 
 
 
@@ -369,111 +277,14 @@ def sim_occs(*occs):
 
 
 
-# define function to visualize semantic change (PCA)
-
-def similarplot(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
-
-    # get list of all similar words from different periods
-
-    sim_words = []
-
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            tempsim = model.most_similar(keyword, topn=7)
-            for term, vector in tempsim:
-                sim_words.append(term)
-
-    sim_words = list(set(sim_words))
-
-    # get vectors of similar words in most recent embedding (1990)
-    sim_vectors1990 = np.array([embeddings1990[w] for w in sim_words])
-
-    # get vectors of keyword in all periods and add them to vectors of similar words
-
-    allvectors = sim_vectors1990
-
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            keyword_vectors = np.array([model[keyword]])
-            allvectors = np.append(allvectors, keyword_vectors, axis=0)
-
-    # reduce dimensions of vectors
-    pca = PCA(n_components=2)
-    two_dim = pca.fit_transform(allvectors)
-
-    # get labels
-    labels = sim_words
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            labels.append(keyword + str(year))
-
-    #plot results
-    plt.scatter(two_dim[:, 0], two_dim[:, 1])
-
-    for i in range(len(sim_words)):
-        plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
-
-    plt.show()
-    plt.close()
 
 
-
-
-# define function to visualize semantic change (T-SNE)
-
-def similarplot2(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10):
-
-    # get list of all similar words from different periods
-
-    sim_words = []
-
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            tempsim = model.most_similar(keyword, topn=7)
-            for term, vector in tempsim:
-                sim_words.append(term)
-
-    sim_words = list(set(sim_words))
-
-    # get vectors of similar words in most recent embedding (1990)
-    sim_vectors1990 = np.array([embeddings1990[w] for w in sim_words])
-
-    # get vectors of keyword in all periods and add them to vectors of similar words
-
-    allvectors = sim_vectors1990
-
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            keyword_vectors = np.array([model[keyword]])
-            allvectors = np.append(allvectors, keyword_vectors, axis=0)
-
-    # reduce dimensions of vectors
-    tsne = TSNE(n_components=2, learning_rate="auto", init="pca", perplexity=5)
-    two_dim = tsne.fit_transform(allvectors)
-
-    # get labels
-    labels = sim_words
-    for model, year in models_all.items():
-        if year in range(rangelow, rangehigh, rangestep):
-            labels.append(keyword + str(year))
-
-    #plot results
-    plt.scatter(two_dim[:, 0], two_dim[:, 1])
-
-    for i in range(len(sim_words)):
-        plt.text(x=two_dim[i, 0], y=two_dim[i, 1], s=labels[i])
-
-    plt.show()
-    plt.close()
-
-
-
-
+##### SEMANTIC CHANGE OF TERM ######
 
 # define function to visualize semantic change (PCA mit keyword als passive projektionen)
 
 
-def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, export = False):
+def semchange(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, export = False):
 
     # get list of all similar words from different periods
 
@@ -542,15 +353,13 @@ def similarplot3(keyword, rangelow = 1800, rangehigh = 2000, rangestep = 10, exp
 
 for x, y in models_all.items():
     print(y)
-    print(x.most_similar("office"))
+    print(x.most_similar("work"))
 
 # --> work has a different meaning before 1850
 
 #%% visualize word embeddings over time
 
-similarplot("gay", 1810, 2000, 60) # PCA
-similarplot2("work", 1810, 2000, 60) # T-SNE
-similarplot3("work", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
+semchange("gay", 1810, 2000, 60, export=False) # PCA mit keyword als passiv
 
 
 
@@ -577,9 +386,14 @@ keywords['work'] = [
 # smith: toil (einzelne Begriffe anzeigen?)
 
 keywords['toil'] = [
-    "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"
+    "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous", "grind"
 ]
-sim_onedim('toil', 1850)
+simdim('toil')
+
+keywords['leisure'] = ["leisure", "ease", "rest", "recreation", "relaxation", "freedom"]
+simdim('leisure')
+
+simdim('toil', 'leisure')
 
 keywords['hard'] = ['hard']
 keywords['struggle'] = ['struggle']
@@ -590,29 +404,28 @@ keywords['endure'] = ['endure']
 keywords['arduous'] = ['arduous']
 keywords['strenuous'] = ['strenuous']
 
-sim_threedim('hard', 'struggle', 'toil', trend=2)
-sim_threedim('trouble', 'suffer', 'endure', trend=2)
-sim_threedim('arduous', 'strenuous', 'toil', trend=2)
+simdim('hard', 'struggle', 'toil', 'trouble', 'suffer', 'endure', 'arduous', 'strenuous', trend=3)
+
+
+
 
 
 
 keywords['fun'] = ["fun", "enjoy", "pleasant"]
+simdim('fun')
 
-keywords['leisure'] = ["leisure", "ease", "rest"]
-sim_onedim('leisure')
 
-sim_twodim('toil', 'fun', 1850)
 
 keywords['emotion'] = [
     "pleasant", "interesting", "boring", "fulfilling", "meaningful", "meaningless",
     "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"
 ]
-sim_onedim('emotion', 1850)
+simdim('emotion', 1850)
 
 keywords['commodity'] = [
     "market", "exchange", "trade", "hire", "rent"
 ]
-sim_onedim('commodity', 1850) # nicht sehr spannend
+simdim('commodity', 1850) # nicht sehr spannend
 
 sim_oneterm('duty') # auch teil von "patriot"
 
@@ -634,24 +447,28 @@ keywords['mat'] = [
                       "earn", "earns", "earning", "earnings",
                       "wage", "wages", "salary", "income", "remuneration", "secure", "pay"
 ]
-keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless"]
+keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless"]
 
-sim_onedim('mat', 1850)
-sim_onedim('postmat', 1850)
-sim_twodim('mat', 'postmat')
+simdim('mat', 1850)
+simdim('postmat', 1850)
+simdim('mat', 'postmat')
 
 keywords['useful'] = ["useful", "society"]
-sim_onedim('useful', 1850)
+simdim('useful', 1850)
 
 
 keywords['status'] = [
     "prestigious", "honorable", "esteemed", "influential", "reputable", "distinguished",
     "eminent", "illustrious", "renowned", "acclaimed"
 ]
-sim_onedim('status', 1850)
+simdim('status', 1850)
 
-keywords['social'] = ["colleague", "friend", "people"]
-sim_onedim('social', 1850)
+keywords['social'] = ["colleague", "colleague", "friend", "friends", "people"]
+simdim('social', 1850)
+
+simdim('mat', 'postmat', 'status', 'social')
+
+
 
 
 
@@ -667,32 +484,32 @@ sim_onedim('social', 1850)
 
 keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
 keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
-sim_twodim('rich', 'poor')
+simdim('rich', 'poor')
 
 keywords['affluence'] = keywords['rich'] + keywords['poor']
-sim_onedim('affluence', 1850) # --> Piketty!
+simdim('affluence', 1850) # --> Piketty!
 
 keywords['success'] = ["success", "succeed", "failure", "fail"]
-sim_onedim('success', 1850)
+simdim('success', 1850)
 
 keywords['religion'] = ["redemption", "salvation"]
-sim_onedim('religion', 1850)
+simdim('religion', 1850)
 
 keywords['vocation'] = ["vocation", "calling", "meaning", "purpose"]
-sim_onedim('vocation', 1850)
+simdim('vocation', 1850)
 
 keywords['moral'] = [
     'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
     'virtuous', 'sinful', 'virtue', 'vice'
 ]
-sim_onedim('moral', 1850) # --> Piketty!
+simdim('moral', 1850) # --> Piketty!
 
 
 
 # Weber: was läuft bei WK?
 
 keywords['patriot'] = ["duty", "country", "patriot", "fatherland", "home"]
-sim_onedim('patriot', 1850)
+simdim('patriot', 1850)
 
 
 
@@ -706,10 +523,10 @@ sim_onedim('patriot', 1850)
 keywords['male'] = ["male", "man", "boy", "brother", "he", "him", "his", "son"]
 keywords['female'] = ["female", "woman", "girl", "sister", "she", "her", "hers", "daughter"]
 
-sim_onedim('male', 1850)
-sim_onedim('female', 1850)
-sim_twodim('male', 'female', diff=False)
-sim_twodim('male', 'female', diff=True)
+simdim('male', 1850)
+simdim('female', 1850)
+simdim('male', 'female', diff=False)
+simdim('male', 'female', diff=True)
 
 # typische arbeitsgeräte für verschiedene epochen
 
@@ -717,11 +534,11 @@ keywords['plow'] = ['plow']
 keywords['telephone'] = ['telephone']
 keywords['computer'] = ['computer']
 
-sim_onedim('plow')
-sim_onedim('telephone')
-sim_onedim('computer')
+simdim('plow')
+simdim('telephone')
+simdim('computer')
 
-sim_threedim('plow', 'telephone', 'computer', trend=2)
+simdim('plow', 'telephone', 'computer', trend=2)
 
 
 # historisches wachstum von sektoren
@@ -732,9 +549,12 @@ keywords['sector2'] = ["manufacturing", "textile", "car", "handicraft"]
 
 keywords['sector3'] = ["service", "social", "information", "advice", "access"]
 
-sim_threedim('sector1', 'sector2', 'sector3', trend=2)
+simdim('sector1', 'sector2', 'sector3', trend=2)
 
 # typisch weibliche/männliche Berufe
+
+keywords['male'] = ["male", "man", "boy", "brother", "he", "him", "his", "son"]
+keywords['female'] = ["female", "woman", "girl", "sister", "she", "her", "hers", "daughter"]
 
 sim_occs('mechanic', 'carpenter', 'engineer', 'nurse', "dancer", "housekeeper")
 
@@ -743,17 +563,17 @@ sim_occs('mechanic', 'carpenter', 'engineer', 'nurse', "dancer", "housekeeper")
 # housework --> work
 
 keywords['housework'] = ["housework", "household"]
-sim_onedim('housework', 1850)
+simdim('housework', 1850)
 
 # beziehungsarbeit
 
 keywords['relations'] = ["relationship"]
-sim_onedim('relations', 1850)
+simdim('relations', 1850)
 
 # DISKURS: Arbeiterbewegung
 
 keywords['politics'] = ["party", "politics", "movement", "election"]
-sim_onedim('politics', 1850)
+simdim('politics', 1850)
 
 
 
@@ -814,6 +634,8 @@ plt.legend(loc='upper left')
 plt.margins(0,0)
 plt.title('100 % stacked area chart')
 plt.show()
+
+
 
 
 
