@@ -1,6 +1,10 @@
 #%% import packages
 
 import pickle
+import sim_occs
+import semchange
+import simdim
+import sim_oneterm
 
 
 #%% load data
@@ -39,23 +43,17 @@ for x, y in models_all.items():
 
 #%% visualize word embeddings over time (PCA mit keyword als passiv)
 
-import semchange
-
 semchange.semchange(models_all, "work", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
-
-
 
 
 #%% association of work with different dimension
 
-import simdim
-
 # set up dictionary and define "work"
 
-keywords = {}
+keywords = dict()
 
 keywords['work'] = [
-    "work", "works", "worked", "working","job", "jobs",
+    "work", "works", "worked", "working", "job", "jobs",
     "career", "careers",
     "profession", "professions", "professional",
     "occupation", "occupations",
@@ -64,7 +62,7 @@ keywords['work'] = [
 ]
 
 
-# smith: toil (einzelne Begriffe anzeigen?)
+#%% smith: toil (einzelne Begriffe anzeigen?)
 
 keywords['toil'] = [
     "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous", "grind"
@@ -80,8 +78,6 @@ simdim.simdim(models_all, keywords, 'work', 'leisure')
 simdim.simdim(models_all, keywords, 'work', 'toil', 'leisure')
 
 
-
-
 keywords['hard'] = ['hard']
 keywords['struggle'] = ['struggle']
 keywords['toil'] = ['toil']
@@ -91,46 +87,32 @@ keywords['endure'] = ['endure']
 keywords['arduous'] = ['arduous']
 keywords['strenuous'] = ['strenuous']
 
-simdim.simdim(models_all, keywords, 'work', 'hard', 'struggle', 'toil', 'trouble', 'suffer', 'endure', 'arduous', 'strenuous')
-
-
-
+simdim.simdim(models_all, keywords, 'work', 'hard', 'struggle', 'toil', 'trouble',
+              'suffer', 'endure', 'arduous', 'strenuous')
 
 
 keywords['fun'] = ["fun", "enjoy", "pleasant"]
 simdim.simdim(models_all, keywords, 'work', 'fun')
 
 
-
 keywords['emotion'] = [
     "pleasant", "interesting", "boring", "fulfilling", "meaningful", "meaningless",
     "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous"
 ]
-simdim('emotion', 1850)
 simdim.simdim(models_all, keywords, 'work', 'emotion')
 
 keywords['commodity'] = [
     "market", "exchange", "trade", "hire", "rent"
 ]
-simdim.simdim(models_all, keywords, 'work', 'commodity') # nicht sehr spannend
+simdim.simdim(models_all, keywords, 'work', 'commodity')  # nicht sehr spannend
 
 
-import sim_oneterm
-
-sim_oneterm.sim_oneterm(models_all, keywords, 'work', 'duty') # auch teil von "patriot"
+sim_oneterm.sim_oneterm(models_all, keywords, 'work', 'duty')  # auch teil von "patriot"
 
 sim_oneterm.sim_oneterm(models_all, keywords, 'work', 'pleasant')
 
 
-
-
-
-
-
-
-
-
-# marx: alienation (extrinsic vs. intrinsic)
+#%% marx: alienation (extrinsic vs. intrinsic)
 
 keywords['mat'] = [
                       "earn", "earns", "earning", "earnings",
@@ -138,75 +120,61 @@ keywords['mat'] = [
 ]
 keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless"]
 
-simdim('mat', 1850)
-simdim('postmat', 1850)
-simdim('mat', 'postmat')
+simdim.simdim(models_all, keywords, 'work', 'mat')
+simdim.simdim(models_all, keywords, 'work', 'postmat')
+simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat')
 
 keywords['useful'] = ["useful", "society"]
-simdim('useful', 1850)
+simdim.simdim(models_all, keywords, 'work', 'useful')
 
 
 keywords['status'] = [
     "prestigious", "honorable", "esteemed", "influential", "reputable", "distinguished",
     "eminent", "illustrious", "renowned", "acclaimed"
 ]
-simdim('status', 1850)
+simdim.simdim(models_all, keywords, 'work', 'status')
 
 keywords['social'] = ["colleague", "colleague", "friend", "friends", "people"]
-simdim('social', 1850)
+simdim.simdim(models_all, keywords, 'work', 'social')
 
-simdim('mat', 'postmat', 'status', 'social')
-
-
+simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat', 'status', 'social')
 
 
-
-
-
-
-
-
-
-
-
-# weber: wealth & religion
+#%% weber: wealth & religion
 
 keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
 keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
-simdim('rich', 'poor')
+simdim.simdim(models_all, keywords, 'work', 'rich', 'poor')
+
 
 keywords['affluence'] = keywords['rich'] + keywords['poor']
-simdim('affluence', 1850) # --> Piketty!
+simdim.simdim(models_all, keywords, 'work', 'affluence')  # --> Piketty!
+
 
 keywords['success'] = ["success", "succeed", "failure", "fail"]
-simdim('success', 1850)
+simdim.simdim(models_all, keywords, 'work', 'success')
 
 keywords['religion'] = ["redemption", "salvation"]
-simdim('religion', 1850)
+simdim.simdim(models_all, keywords, 'work', 'religion')
 
 keywords['vocation'] = ["vocation", "calling", "meaning", "purpose"]
-simdim('vocation', 1850)
+simdim.simdim(models_all, keywords, 'work', 'vocation')
 
 keywords['moral'] = [
     'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
     'virtuous', 'sinful', 'virtue', 'vice'
 ]
-simdim('moral', 1850) # --> Piketty!
-
+simdim.simdim(models_all, keywords, 'work', 'moral')  # --> Piketty!
 
 # work hard?
-
-
 
 # Weber: was läuft bei WK?
 
 keywords['patriot'] = ["duty", "country", "patriot", "fatherland", "home"]
-simdim('patriot', 1850)
+simdim.simdim(models_all, keywords, 'work', 'patriot')
 
 
-
-
-# VALIDATION
+#%% VALIDATION
 
 # faktisch
 
@@ -215,10 +183,11 @@ simdim('patriot', 1850)
 keywords['male'] = ["male", "man", "boy", "brother", "he", "him", "his", "son"]
 keywords['female'] = ["female", "woman", "girl", "sister", "she", "her", "hers", "daughter"]
 
-simdim('male', 1850)
-simdim('female', 1850)
-simdim('male', 'female', diff=False)
-simdim('male', 'female', diff=True)
+simdim.simdim(models_all, keywords, 'work', 'male')
+simdim.simdim(models_all, keywords, 'work', 'female')
+simdim.simdim(models_all, keywords, 'work', 'male', 'female', diff=False)
+simdim.simdim(models_all, keywords, 'work', 'male', 'female', diff=True)
+
 
 # typische arbeitsgeräte für verschiedene epochen
 
@@ -226,11 +195,11 @@ keywords['plow'] = ['plow']
 keywords['telephone'] = ['telephone']
 keywords['computer'] = ['computer']
 
-simdim('plow')
-simdim('telephone')
-simdim('computer')
+simdim.simdim(models_all, keywords, 'work', 'plow')
+simdim.simdim(models_all, keywords, 'work', 'telephone')
+simdim.simdim(models_all, keywords, 'work', 'computer')
 
-simdim('plow', 'telephone', 'computer', trend=2)
+simdim.simdim(models_all, keywords, 'work', 'plow', 'telephone', 'computer', trend=2)
 
 
 # historisches wachstum von sektoren
@@ -241,17 +210,15 @@ keywords['sector2'] = ["manufacturing", "textile", "car", "handicraft"]
 
 keywords['sector3'] = ["service", "social", "information", "advice", "access"]
 
-simdim('sector1', 'sector2', 'sector3', trend=2)
+simdim.simdim(models_all, keywords, 'work', 'sector1', 'sector2', 'sector3', trend=2)
 
 # typisch weibliche/männliche Berufe
 
 keywords['male'] = ["male", "man", "boy", "brother", "he", "him", "his", "son"]
 keywords['female'] = ["female", "woman", "girl", "sister", "she", "her", "hers", "daughter"]
 
-import sim_occs
+
 sim_occs.sim_occs(models_all, keywords, 'mechanic', 'carpenter', 'engineer', 'nurse', "dancer", "housekeeper")
-
-
 
 
 # SEMANTIC DRIFT
@@ -259,57 +226,16 @@ sim_occs.sim_occs(models_all, keywords, 'mechanic', 'carpenter', 'engineer', 'nu
 # housework --> work
 
 keywords['housework'] = ["housework", "household"]
-simdim('housework', 1850)
+simdim.simdim(models_all, keywords, 'work', 'housework')
+
 
 # beziehungsarbeit
 
 keywords['relations'] = ["relationship"]
-simdim('relations', 1850)
+simdim.simdim(models_all, keywords, 'work', 'relations')
+
 
 # DISKURS: Arbeiterbewegung
 
 keywords['politics'] = ["party", "politics", "movement", "election"]
-simdim('politics', 1850)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+simdim.simdim(models_all, keywords, 'work', 'politics')
