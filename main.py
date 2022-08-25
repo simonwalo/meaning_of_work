@@ -71,9 +71,13 @@ simdim.simdim(models_all, keywords, 'work', 'hard', 'struggle', 'toil', 'trouble
               'suffer', 'endure', 'arduous', 'strenuous')
 
 
-keywords['fun'] = ["fun", "enjoy", "pleasant"]
+keywords['fun'] = ["fun", "enjoy", "pleasant", "happy", "like", "love", "delight"]
 simdim.simdim(models_all, keywords, 'work', 'fun')
+simdim.simdim(models_all, keywords, 'work', 'toil', 'fun')
 
+keywords['stress'] = ["stress", "exhausting", "tired"]
+simdim.simdim(models_all, keywords, 'work', 'stress')
+simdim.simdim(models_all, keywords, 'work', 'toil', 'stress')
 
 keywords['emotion'] = [
     "pleasant", "interesting", "boring", "fulfilling", "meaningful", "meaningless",
@@ -95,13 +99,24 @@ sim_oneterm.sim_oneterm(models_all, keywords, 'work', 'pleasant')
 #%% marx: alienation (extrinsic vs. intrinsic)
 
 keywords['mat'] = [
-                      "earn", "earns", "earning", "earnings",
-                      "wage", "wages", "salary", "income", "remuneration", "secure", "pay"
+                    "earn", "earns", "earning", "earnings",
+                    "wage", "wages", "salary", "income", "remuneration", "pay",
+                    "secure", "security", "insecure", "insecurity"
 ]
-keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless"]
+
+
+keywords['secure'] = [
+                      "secure", "security", "insecure", "insecurity"
+]
+
+
+keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless",
+                       "expression", "creative"]
 
 simdim.simdim(models_all, keywords, 'work', 'mat')
 simdim.simdim(models_all, keywords, 'work', 'postmat')
+simdim.simdim(models_all, keywords, 'work', 'secure')
+
 simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat')
 
 keywords['useful'] = ["useful", "society"]
@@ -112,7 +127,7 @@ keywords['status'] = [
     "prestigious", "honorable", "esteemed", "influential", "reputable", "distinguished",
     "eminent", "illustrious", "renowned", "acclaimed"
 ]
-simdim.simdim(models_all, keywords, 'work', 'status')
+simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat', 'status')
 
 keywords['social'] = ["colleague", "colleague", "friend", "friends", "people"]
 simdim.simdim(models_all, keywords, 'work', 'social')
