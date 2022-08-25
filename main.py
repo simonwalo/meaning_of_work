@@ -17,7 +17,7 @@ with open('./data/models_all.pickle', 'rb') as handle:
 
 for x, y in models_all.items():
     print(x)
-    print(y.most_similar("work"))
+    print(y.most_similar("sofa"))
 
 # --> work has a different meaning before 1850
 
@@ -169,6 +169,13 @@ keywords['patriot'] = ["duty", "country", "patriot", "fatherland", "home"]
 simdim.simdim(models_all, keywords, 'work', 'patriot')
 
 
+
+
+
+
+
+
+
 #%% VALIDATION
 
 # faktisch
@@ -194,7 +201,7 @@ simdim.simdim(models_all, keywords, 'work', 'plow')
 simdim.simdim(models_all, keywords, 'work', 'telephone')
 simdim.simdim(models_all, keywords, 'work', 'computer')
 
-simdim.simdim(models_all, keywords, 'work', 'plow', 'telephone', 'computer', trend=2)
+simdim.simdim(models_all, keywords, 'work', 'plow', 'telephone', 'computer', trend=3)
 
 
 # historisches wachstum von sektoren
@@ -205,7 +212,7 @@ keywords['sector2'] = ["manufacturing", "textile", "car", "handicraft"]
 
 keywords['sector3'] = ["service", "social", "information", "advice", "access"]
 
-simdim.simdim(models_all, keywords, 'work', 'sector1', 'sector2', 'sector3', trend=2)
+simdim.simdim(models_all, keywords, 'work', 'sector1', 'sector2', 'sector3', trend=3)
 
 # typisch weibliche/männliche Berufe
 
