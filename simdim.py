@@ -1,4 +1,6 @@
 
+# debug: title of graph should inlude key name
+
 # define similarity function for n dimensions
 
 import matplotlib.pyplot as plt
@@ -85,7 +87,7 @@ def simdim(models, keywords, key, *dims, trend=3, diff=False, rangelow=1850, ran
 
     #show plot
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.title("Association of dimension(s) with work")
+    plt.title(f'Association of dimension(s) with {key=}')
     plt.tight_layout()
     plt.show()
     plt.close()
