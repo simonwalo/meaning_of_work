@@ -42,12 +42,19 @@ keywords['work'] = [
 ]
 
 for i in keywords['work']:
-    for year, model in google.items():
-        if model[i].all() == google[1840]['biology'].all():
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-
+keywords['work'] = [
+    "work", "works", "worked", "working", "job", "jobs",
+    "career",
+    "profession", "professions", "professional",
+    "occupation", "occupations",
+    "employment", "employed",
+    "labor", "labors"
+]
 
 #%% smith: toil (einzelne Begriffe anzeigen?)
 
@@ -142,7 +149,7 @@ simdim.simdim(models_all, keywords, 'work', 'social')
 simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat', 'status', 'social')
 
 
-#%% weber: wealth & religion
+#%% weber: wealth, morality & religion
 
 keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
 keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
@@ -154,11 +161,11 @@ simdim.simdim(models_all, keywords, 'work', 'affluence')  # --> Piketty!
 
 
 keywords['success'] = ["success", "succeed", "failure", "fail"]
-simdim.simdim(google, keywords, 'work', 'success')
+simdim.simdim(models_all, keywords, 'work', 'success')
 
-keywords['religion'] = ["redemption", "salvation", "god", "religion", "pious"]
-simdim.simdim(google, keywords, 'work', 'religion')
-simdim.simdim(google, keywords, 'work', 'religion', 'moral', 'affluence')
+keywords['religion'] = ["redemption", "salvation", "god", "religion", "pious", "calling"]
+simdim.simdim(models_all, keywords, 'work', 'religion')
+simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence')
 
 
 
@@ -170,6 +177,10 @@ keywords['moral'] = [
     'virtuous', 'sinful', 'virtue', 'vice'
 ]
 simdim.simdim(models_all, keywords, 'work', 'moral')  # --> Piketty!
+
+
+simdim.simdim(models_all, keywords, 'work', 'moral', 'affluence', 'religion')  # --> Piketty!
+
 
 # work hard?
 

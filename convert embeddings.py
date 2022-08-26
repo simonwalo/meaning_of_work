@@ -58,3 +58,33 @@ pickle.dump(embeddings1960, open("./data/embeddings1960.pickle", 'wb'))
 pickle.dump(embeddings1970, open("./data/embeddings1970.pickle", 'wb'))
 pickle.dump(embeddings1980, open("./data/embeddings1980.pickle", 'wb'))
 pickle.dump(embeddings1990, open("./data/embeddings1990.pickle", 'wb'))
+
+
+
+#%% save dict with all embeddings
+
+models_all = {
+    1800: pickle.load(open("./data/embeddings1800.pickle", 'rb')),
+    1810: pickle.load(open("./data/embeddings1810.pickle", 'rb')),
+    1820: pickle.load(open("./data/embeddings1820.pickle", 'rb')),
+    1830: pickle.load(open("./data/embeddings1830.pickle", 'rb')),
+    1840: pickle.load(open("./data/embeddings1840.pickle", 'rb')),
+    1850: pickle.load(open("./data/embeddings1850.pickle", 'rb')),
+    1860: pickle.load(open("./data/embeddings1860.pickle", 'rb')),
+    1870: pickle.load(open("./data/embeddings1870.pickle", 'rb')),
+    1880: pickle.load(open("./data/embeddings1880.pickle", 'rb')),
+    1890: pickle.load(open("./data/embeddings1890.pickle", 'rb')),
+    1900: pickle.load(open("./data/embeddings1900.pickle", 'rb')),
+    1910: pickle.load(open("./data/embeddings1910.pickle", 'rb')),
+    1920: pickle.load(open("./data/embeddings1920.pickle", 'rb')),
+    1930: pickle.load(open("./data/embeddings1930.pickle", 'rb')),
+    1940: pickle.load(open("./data/embeddings1940.pickle", 'rb')),
+    1950: pickle.load(open("./data/embeddings1950.pickle", 'rb')),
+    1960: pickle.load(open("./data/embeddings1960.pickle", 'rb')),
+    1970: pickle.load(open("./data/embeddings1970.pickle", 'rb')),
+    1980: pickle.load(open("./data/embeddings1980.pickle", 'rb')),
+    1990: pickle.load(open("./data/embeddings1990.pickle", 'rb')),
+}
+
+with open('./data/models_all.pickle', 'wb') as handle:
+    pickle.dump(models_all, handle, protocol=pickle.HIGHEST_PROTOCOL)
