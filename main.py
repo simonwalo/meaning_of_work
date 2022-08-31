@@ -62,7 +62,7 @@ keywords['toil'] = [
     "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous", "grind"
 ]
 
-simdim.simdim(models_all, keywords, 'work', 'toil', trend=3, diff=False, rangelow=1850, rangehigh=2000, rangestep=10)
+simdim.simdim(models_all, keywords, 'work', 'toil', rangelow=1850, rangehigh=2000, rangestep=10)
 simdim.simdim(models_all, keywords, 'work', 'toil')
 
 
@@ -208,8 +208,8 @@ keywords['female'] = ["female", "woman", "girl", "sister", "she", "her", "hers",
 
 simdim.simdim(models_all, keywords, 'work', 'male')
 simdim.simdim(models_all, keywords, 'work', 'female')
-simdim.simdim(models_all, keywords, 'work', 'male', 'female', diff=False)
-simdim.simdim(models_all, keywords, 'work', 'male', 'female', diff=True)
+simdim.simdim(models_all, keywords, 'work', 'male', 'female',  rangelow=1850, rangehigh=2000, rangestep=10)
+simdim.simdim(models_all, keywords, 'work', 'male', 'female')
 
 
 # typische arbeitsgeräte für verschiedene epochen

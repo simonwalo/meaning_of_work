@@ -26,3 +26,4 @@ plt.legend(loc='upper left')
 plt.margins(0,0)
 plt.title('100 % stacked area chart')
 plt.show()
+
