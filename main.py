@@ -87,7 +87,7 @@ simdim.simdim(models_all, keywords, 'work', 'hard', 'struggle', 'toil', 'trouble
 
 keywords['fun'] = ["fun", "enjoy", "pleasant", "happy", "like", "love", "delight"]
 simdim.simdim(models_all, keywords, 'work', 'fun')
-simdim.simdim(models_all, keywords, 'work', 'toil', 'fun')
+simdim.simdim(models_all, keywords, 'work', 'toil', 'fun', ci=90)
 
 keywords['stress'] = ["stress", "exhausting", "tired"]
 simdim.simdim(models_all, keywords, 'work', 'stress')
@@ -204,7 +204,18 @@ simdim.simdim(models_all, keywords, 'work', 'patriot')
 # connotation von Arbeit mit mann/frau
 
 keywords['male'] = ["male", "man", "boy", "brother", "he", "him", "his", "son"]
+keywords['male'] = [
+    'he', 'son', 'his', 'him', 'father', 'man', 'boy', 'himself',
+    'male', 'brother', 'sons', 'fathers', 'men', 'boys', 'males',
+    'brothers', 'uncle', 'uncles', 'nephew', 'nephews'
+]
+
 keywords['female'] = ["female", "woman", "girl", "sister", "she", "her", "hers", "daughter"]
+keywords['female'] = [
+    'she', 'daughter', 'hers', 'her', 'mother', 'woman', 'girl', 'herself', 'female',
+    'sister', 'daughters', 'mothers', 'women', 'girls', 'sisters', 'aunt',
+    'aunts', 'niece', 'nieces'
+]
 
 simdim.simdim(models_all, keywords, 'work', 'male')
 simdim.simdim(models_all, keywords, 'work', 'female')

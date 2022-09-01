@@ -12,16 +12,16 @@ import random
 
 
 
-def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangestep=10):
+def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangestep=10, ci=95, bootstrap=1000):
 
     medians = pd.DataFrame()
     lower_cis = pd.DataFrame()
     upper_cis = pd.DataFrame()
 
     for dim in dims:
-        data = pd.DataFrame(index=range(len(range(rangelow, rangehigh, rangestep))), columns=range(1000))
+        data = pd.DataFrame(index=range(len(range(rangelow, rangehigh, rangestep))), columns=range(bootstrap))
 
-        for i in range(1000):
+        for i in range(bootstrap):
 
             sample1 = keywords['work']  # random.choices(keywords['work'], k=len(keywords['work']))
             sample2 = random.choices(keywords[dim], k=len(keywords[dim]))
@@ -41,7 +41,7 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
         medians[dim] = temp
 
         # get 95% intervals
-        alpha = 100 - 95
+        alpha = 100 - ci
 
         # get lowers CIs
         temp = []
