@@ -17,7 +17,7 @@ with open('./data/models_all.pickle', 'rb') as handle:
 
 for x, y in models_all.items():
     print(x)
-    print(y.most_similar("work"))
+    print(y.most_similar("labor"))
 
 # --> work has a different meaning before 1850
 
@@ -38,7 +38,7 @@ keywords['work'] = [
     "profession", "professions", "professional",
     "occupation", "occupations",
     "employment", "employed",
-    "labor", "labors"
+    "labor", "labors", 'labour', 'labours'
 ]
 
 for i in keywords['work']:
@@ -62,9 +62,24 @@ keywords['toil'] = [
     "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous", "grind"
 ]
 
+for i in keywords['toil']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
 simdim.simdim(models_all, keywords, 'work', 'toil', rangelow=1850, rangehigh=2000, rangestep=10)
 simdim.simdim(models_all, keywords, 'work', 'toil')
 
+keywords['pleasure'] = ["fun", "enjoy", "pleasant", "happy", "like", "love", "delight"]
+
+for i in keywords['pleasure']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+simdim.simdim(models_all, keywords, 'work', 'toil', 'pleasure', ci=95)
 
 keywords['leisure'] = ["leisure", "ease", "rest", "recreation", "relaxation", "freedom"]
 simdim.simdim(models_all, keywords, 'work', 'leisure')
@@ -85,9 +100,7 @@ simdim.simdim(models_all, keywords, 'work', 'hard', 'struggle', 'toil', 'trouble
               'suffer', 'endure', 'arduous', 'strenuous')
 
 
-keywords['fun'] = ["fun", "enjoy", "pleasant", "happy", "like", "love", "delight"]
-simdim.simdim(models_all, keywords, 'work', 'fun')
-simdim.simdim(models_all, keywords, 'work', 'toil', 'fun', ci=90)
+
 
 keywords['stress'] = ["stress", "exhausting", "tired"]
 simdim.simdim(models_all, keywords, 'work', 'stress')
@@ -118,6 +131,17 @@ keywords['mat'] = [
                     "secure", "security", "insecure", "insecurity"
 ]
 
+for i in keywords['mat']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+keywords['mat'] = [
+                    "earn", "earning", "earnings",
+                    "wage", "wages", "salary", "income", "remuneration", "pay",
+                    "secure", "security", "insecure", "insecurity"
+]
 
 keywords['secure'] = [
                       "secure", "security", "insecure", "insecurity"
@@ -125,6 +149,15 @@ keywords['secure'] = [
 
 
 keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless",
+                       "expression", "creative"]
+
+for i in keywords['postmat']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+keywords['postmat'] = ["interesting", "boring", "fulfilling", "useful", "useless",
                        "expression", "creative"]
 
 simdim.simdim(models_all, keywords, 'work', 'mat')
@@ -157,26 +190,55 @@ simdim.simdim(models_all, keywords, 'work', 'rich', 'poor')
 
 
 keywords['affluence'] = keywords['rich'] + keywords['poor']
+
+for i in keywords['affluence']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
 simdim.simdim(models_all, keywords, 'work', 'affluence')  # --> Piketty!
+
+keywords['religion'] = ["redemption", "salvation", "god", "religion", "pious", "calling"]
+
+for i in keywords['religion']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+simdim.simdim(models_all, keywords, 'work', 'religion')
+
+
+keywords['moral'] = [
+    'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
+    'virtuous', 'sinful', 'virtue', 'vice'
+]
+
+for i in keywords['moral']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+simdim.simdim(models_all, keywords, 'work', 'moral')  # --> Piketty!
+
+simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence')
+
+
 
 
 keywords['success'] = ["success", "succeed", "failure", "fail"]
 simdim.simdim(models_all, keywords, 'work', 'success')
 
-keywords['religion'] = ["redemption", "salvation", "god", "religion", "pious", "calling"]
-simdim.simdim(models_all, keywords, 'work', 'religion')
-simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence')
+
 
 
 
 keywords['vocation'] = ["vocation", "calling", "meaning", "purpose"]
 simdim.simdim(models_all, keywords, 'work', 'vocation')
 
-keywords['moral'] = [
-    'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
-    'virtuous', 'sinful', 'virtue', 'vice'
-]
-simdim.simdim(models_all, keywords, 'work', 'moral')  # --> Piketty!
+
 
 
 simdim.simdim(models_all, keywords, 'work', 'moral', 'affluence', 'religion')  # --> Piketty!
