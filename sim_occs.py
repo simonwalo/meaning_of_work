@@ -7,15 +7,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def sim_occs(models, keywords, *occs):
+def sim_occs(models, keywords, *occs, rangelow=1850, rangehigh=2000, rangestep=10):
 
-    diffdata = pd.DataFrame(models.keys())
+    diffdata = pd.DataFrame(range(rangelow, rangehigh, rangestep))
     diffdata.rename(columns={0: 'year'}, inplace=True)
 
     for occ in occs:
         d = []
         for year, model in models.items():
-            if year in range(1800, 2000, 10):
+            if year in range(1850, 2000, 10):
                 d.append(
                     {
                         "year": year,
