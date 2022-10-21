@@ -47,6 +47,7 @@ for i in keywords['work']:
             if year >= 1850:
                 print(str(year) + ": " + i)
 
+
 keywords['work'] = [
     "work", "works", "worked", "working", "job", "jobs",
     "career",
@@ -56,11 +57,21 @@ keywords['work'] = [
     "labor", "labors"
 ]
 
+# check similarity of words
+for i in keywords['work']:
+    print(models_all[1850].n_similarity(['labors'], [i]))
+
+
 #%% smith: toil (einzelne Begriffe anzeigen?)
 
 keywords['toil'] = [
     "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous", "grind"
 ]
+
+# check similarity of words
+for i in keywords['toil']:
+    print(models_all[1910].n_similarity(['grind'], [i]))
+
 
 for i in keywords['toil']:
     for year, model in models_all.items():
