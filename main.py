@@ -12,6 +12,13 @@ import sim_oneterm
 with open('./data/models_all.pickle', 'rb') as handle:
     models_all = pickle.load(handle)
 
+# save data in gensim format
+#vectors1800 = models_all[1800]
+#vectors1800.save('vectors.kv')
+
+# reload data from gensim format
+#loadedvectors1800 = KeyedVectors.load('vectors.kv')
+
 
 #%%  most similar terms
 
