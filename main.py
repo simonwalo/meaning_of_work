@@ -24,13 +24,13 @@ with open('./data/models_all.pickle', 'rb') as handle:
 
 for x, y in models_all.items():
     print(x)
-    print(y.most_similar("labor"))
+    print(y.most_similar("toil"))
 
 # --> work has a different meaning before 1850
 
 #%% visualize word embeddings over time (PCA mit keyword als passiv)
 
-semchange.semchange(models_all, "work", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
+semchange.semchange(models_all, "toil", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
 
 
 #%% association of work with different dimension
@@ -60,8 +60,7 @@ keywords['work'] = [
     "career",
     "profession", "professions", "professional",
     "occupation", "occupations",
-    "employment", "employed",
-    "labor", "labors"
+    "employment", "employed"
 ]
 
 # check similarity of words
@@ -77,17 +76,30 @@ keywords['toil'] = [
 
 # check similarity of words
 for i in keywords['toil']:
-    print(models_all[1910].n_similarity(['grind'], [i]))
+    print(models_all[1910].n_similarity(['exertion'], [i]))
 
+# so far best CIs:     "toil", "toils", "toiling", "trouble", "exertion", "struggle", "drudgery", "pains", "labor", "labour", "travail", "fatigue"
 
-for i in keywords['toil']:
+keywords['toil2'] = [
+    "toil", "toils", "toiling", "trouble", "exertion", "struggle", "drudgery", "pains", "labor", "labour", "travail", "fatigue"
+]
+
+keywords['toil3'] = [
+    "hard", "arduous", "strenuous", "exhausting", "burdensome", "painful", "tough", "onerous"
+]
+
+keywords['toil4'] = [
+    "toil", "trouble", "exertion", "struggle", "drudgery"
+]
+
+for i in keywords['toil2']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
 simdim.simdim(models_all, keywords, 'work', 'toil', rangelow=1850, rangehigh=2000, rangestep=10)
-simdim.simdim(models_all, keywords, 'work', 'toil')
+simdim.simdim(models_all, keywords, 'work', 'toil2')
 
 keywords['pleasure'] = ["fun", "enjoy", "pleasant", "happy", "like", "love", "delight"]
 
@@ -97,7 +109,10 @@ for i in keywords['pleasure']:
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'toil', 'pleasure', ci=95)
+simdim.simdim(models_all, keywords, 'work', 'toil2', 'pleasure', ci=95)
+simdim.simdim(models_all, keywords, 'work', 'toil3', 'pleasure', ci=95)
+simdim.simdim(models_all, keywords, 'work', 'toil4', 'pleasure', ci=95)
+
 
 keywords['leisure'] = ["leisure", "ease", "rest", "recreation", "relaxation", "freedom"]
 simdim.simdim(models_all, keywords, 'work', 'leisure')
@@ -182,7 +197,7 @@ simdim.simdim(models_all, keywords, 'work', 'mat')
 simdim.simdim(models_all, keywords, 'work', 'postmat')
 simdim.simdim(models_all, keywords, 'work', 'secure')
 
-simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat')
+simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat', ci=90)
 
 keywords['useful'] = ["useful", "society"]
 simdim.simdim(models_all, keywords, 'work', 'useful')
@@ -217,7 +232,7 @@ for i in keywords['affluence']:
 
 simdim.simdim(models_all, keywords, 'work', 'affluence')  # --> Piketty!
 
-keywords['religion'] = ["redemption", "salvation", "god", "religion", "pious", "calling"]
+keywords['religion'] = ["redemption", "salvation", "god", "religion", "holy"]
 
 for i in keywords['religion']:
     for year, model in models_all.items():
@@ -225,13 +240,21 @@ for i in keywords['religion']:
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'religion')
+# check similarity of words
+for i in keywords['religion']:
+    print(models_all[1910].n_similarity(['calling'], [i]))
 
+simdim.simdim(models_all, keywords, 'work', 'religion')
 
 keywords['moral'] = [
     'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
     'virtuous', 'sinful', 'virtue', 'vice'
 ]
+
+keywords['moral2'] = [
+    'good', 'moral', 'good', 'honest', 'virtuous', 'virtue'
+]
+
 
 for i in keywords['moral']:
     for year, model in models_all.items():
@@ -241,8 +264,12 @@ for i in keywords['moral']:
 
 simdim.simdim(models_all, keywords, 'work', 'moral')  # --> Piketty!
 
-simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence')
+simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'religion', 'affluence', ci=95)
+simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', ci=95)
+simdim.simdim(models_all, keywords, 'work', 'moral', 'affluence', ci=95)
 
+simdim.simdim(models_all, keywords, 'work', 'religion', 'moral2', ci=90)
 
 
 
@@ -353,3 +380,17 @@ simdim.simdim(models_all, keywords, 'work', 'relations')
 
 keywords['politics'] = ["party", "politics", "movement", "election"]
 simdim.simdim(models_all, keywords, 'work', 'politics')
+
+
+
+
+#%% Test types of work
+
+keywords['all'] = keywords['toil2'] + keywords['pleasure'] + keywords['mat'] + keywords['postmat'] + keywords['religion'] + keywords['moral'] + keywords['affluence']
+
+for i in keywords['all']:
+    print(i, models_all[1910].n_similarity(keywords['work'], [i]))
+
+# random lists of adjectives/nouns/verbs:
+# https://www.randomlists.com/random-adjectives?dup=false&qty=100
+
