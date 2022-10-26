@@ -384,13 +384,41 @@ simdim.simdim(models_all, keywords, 'work', 'politics')
 
 
 
-#%% Test types of work
-
-keywords['all'] = keywords['toil2'] + keywords['pleasure'] + keywords['mat'] + keywords['postmat'] + keywords['religion'] + keywords['moral'] + keywords['affluence']
-
-for i in keywords['all']:
-    print(i, models_all[1910].n_similarity(keywords['work'], [i]))
+#%% Test distances between different POS
 
 # random lists of adjectives/nouns/verbs:
 # https://www.randomlists.com/random-adjectives?dup=false&qty=100
 
+# import word lists (1000 each)
+
+import pandas as pd
+df = pd.read_csv(r'./data/random word lists.CSV', sep=';')
+
+# clean word lists: delete if not in embeddings
+
+adjectives = []
+for i in df.adjectives:
+    if i in models_all[1810]:
+        adjectives.append(i)
+
+nouns = []
+for i in df.nouns:
+    if i in models_all[1810]:
+        nouns.append(i)
+
+verbs = []
+for i in df.verbs:
+    if i in models_all[1810]:
+        verbs.append(i)
+
+for year, model in models_all.items():
+    if year >= 1850:
+        print(year, model.n_similarity(keywords['work'], adjectives))
+
+for year, model in models_all.items():
+    if year >= 1850:
+        print(year, model.n_similarity(keywords['work'], nouns))
+
+for year, model in models_all.items():
+    if year >= 1850:
+        print(year, model.n_similarity(keywords['work'], verbs))
