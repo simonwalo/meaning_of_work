@@ -1,4 +1,55 @@
+
+import pickle
+with open('./data/models_all.pickle', 'rb') as handle:
+    models_all = pickle.load(handle)
+
+# save data in gensim format
+
 from gensim.models import KeyedVectors
+
+vectors1800 = models_all[1800]
+vectors1800.save('./data/vectors1800.kv')
+vectors1810 = models_all[1810]
+vectors1810.save('./data/vectors1810.kv')
+vectors1820 = models_all[1820]
+vectors1820.save('./data/vectors1820.kv')
+vectors1830 = models_all[1830]
+vectors1830.save('./data/vectors1830.kv')
+vectors1840 = models_all[1840]
+vectors1840.save('./data/vectors1840.kv')
+vectors1850 = models_all[1850]
+vectors1850.save('./data/vectors1850.kv')
+vectors1860 = models_all[1860]
+vectors1860.save('./data/vectors1860.kv')
+vectors1870 = models_all[1870]
+vectors1870.save('./data/vectors1870.kv')
+vectors1880 = models_all[1880]
+vectors1880.save('./data/vectors1880.kv')
+vectors1890 = models_all[1890]
+vectors1890.save('./data/vectors1890.kv')
+vectors1900 = models_all[1900]
+vectors1900.save('./data/vectors1900.kv')
+vectors1910 = models_all[1910]
+vectors1910.save('./data/vectors1910.kv')
+vectors1920 = models_all[1920]
+vectors1920.save('./data/vectors1920.kv')
+vectors1930 = models_all[1930]
+vectors1930.save('./data/vectors1930.kv')
+vectors1940 = models_all[1940]
+vectors1940.save('./data/vectors1940.kv')
+vectors1950 = models_all[1950]
+vectors1950.save('./data/vectors1950.kv')
+vectors1960 = models_all[1960]
+vectors1960.save('./data/vectors1960.kv')
+vectors1970 = models_all[1970]
+vectors1970.save('./data/vectors1970.kv')
+vectors1980 = models_all[1980]
+vectors1980.save('./data/vectors1980.kv')
+vectors1990 = models_all[1990]
+vectors1990.save('./data/vectors1990.kv')
+
+
+# COHA
 
 coha1810 = KeyedVectors.load_word2vec_format('./data/COHA/coha-word_sgns_gensim_1810.txt', binary=False, no_header=True)
 coha1820 = KeyedVectors.load_word2vec_format('./data/COHA/coha-word_sgns_gensim_1820.txt', binary=False, no_header=True)

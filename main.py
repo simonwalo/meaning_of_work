@@ -1,23 +1,36 @@
 #%% import packages
 
-import pickle
 import sim_occs
 import semchange
 import simdim
 import sim_oneterm
+from gensim.models import KeyedVectors
 
 
 #%% load data
 
-with open('./data/models_all.pickle', 'rb') as handle:
-    models_all = pickle.load(handle)
-
-# save data in gensim format
-#vectors1800 = models_all[1800]
-#vectors1800.save('vectors.kv')
-
-# reload data from gensim format
-#loadedvectors1800 = KeyedVectors.load('vectors.kv')
+models_all = {
+    1800: KeyedVectors.load('./data/vectors1800.kv'),
+    1810: KeyedVectors.load('./data/vectors1810.kv'),
+    1820: KeyedVectors.load('./data/vectors1820.kv'),
+    1830: KeyedVectors.load('./data/vectors1830.kv'),
+    1840: KeyedVectors.load('./data/vectors1840.kv'),
+    1850: KeyedVectors.load('./data/vectors1850.kv'),
+    1860: KeyedVectors.load('./data/vectors1860.kv'),
+    1870: KeyedVectors.load('./data/vectors1870.kv'),
+    1880: KeyedVectors.load('./data/vectors1880.kv'),
+    1890: KeyedVectors.load('./data/vectors1890.kv'),
+    1900: KeyedVectors.load('./data/vectors1900.kv'),
+    1910: KeyedVectors.load('./data/vectors1910.kv'),
+    1920: KeyedVectors.load('./data/vectors1920.kv'),
+    1930: KeyedVectors.load('./data/vectors1930.kv'),
+    1940: KeyedVectors.load('./data/vectors1940.kv'),
+    1950: KeyedVectors.load('./data/vectors1950.kv'),
+    1960: KeyedVectors.load('./data/vectors1960.kv'),
+    1970: KeyedVectors.load('./data/vectors1970.kv'),
+    1980: KeyedVectors.load('./data/vectors1980.kv'),
+    1990: KeyedVectors.load('./data/vectors1990.kv')
+}
 
 
 #%%  most similar terms
