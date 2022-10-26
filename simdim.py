@@ -57,7 +57,6 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
             temp.append(np.percentile(sample, 100 - alpha / 2))
         upper_cis[dim] = temp
 
-
     # the trendline
 
     x = range(rangelow, rangehigh, rangestep)
@@ -69,12 +68,19 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
     for dim in dims:
         y = medians[dim].tolist()
         fun = interp1d(x, y, kind='cubic')
+
+        low = lower_cis[dim].tolist()
+        fun_low = interp1d(x, low, kind='cubic')
+
+        high = upper_cis[dim].tolist()
+        fun_high = interp1d(x, high, kind='cubic')
+
         color = next(colors)
         plt.plot(xnew, fun(xnew), "-", color=color, label=dim)
         plt.plot(x, y, 'o', color=color)
-        plt.fill_between(x, lower_cis[dim].tolist(), upper_cis[dim].tolist(), alpha=0.2)
+        plt.fill_between(xnew, fun_low(xnew), fun_high(xnew), alpha=0.2)
 
-    #show plot
+    # show plot
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.title(f'Association of dimension(s) with {key=}')
     plt.tight_layout()

@@ -109,7 +109,7 @@ for i in keywords['pleasure']:
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'toil2', 'pleasure', ci=95)
+simdim.simdim(models_all, keywords, 'work', 'toil2', 'pleasure', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'toil3', 'pleasure', ci=95)
 simdim.simdim(models_all, keywords, 'work', 'toil4', 'pleasure', ci=95)
 
@@ -265,11 +265,11 @@ for i in keywords['moral']:
 simdim.simdim(models_all, keywords, 'work', 'moral')  # --> Piketty!
 
 simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence', ci=90)
-simdim.simdim(models_all, keywords, 'work', 'religion', 'affluence', ci=95)
-simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', ci=95)
-simdim.simdim(models_all, keywords, 'work', 'moral', 'affluence', ci=95)
-
+simdim.simdim(models_all, keywords, 'work', 'religion', 'affluence', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'religion', 'moral2', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'moral', 'affluence', ci=90)
+
 
 
 
@@ -422,3 +422,7 @@ for year, model in models_all.items():
 for year, model in models_all.items():
     if year >= 1850:
         print(year, model.n_similarity(keywords['work'], verbs))
+
+for year, model in models_all.items():
+    if year >= 1850:
+        print(year, model.n_similarity(nouns, verbs))
