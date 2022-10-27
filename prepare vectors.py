@@ -3,6 +3,50 @@ import pickle
 with open('./data/models_all.pickle', 'rb') as handle:
     models_all = pickle.load(handle)
 
+# save data in word2vec format
+
+vectors1800 = models_all[1800]
+vectors1800.save_word2vec_format('./data/vectors1800.bin', binary=True)
+vectors1810 = models_all[1810]
+vectors1810.save_word2vec_format('./data/vectors1810.bin', binary=True)
+vectors1820 = models_all[1820]
+vectors1820.save_word2vec_format('./data/vectors1820.bin', binary=True)
+vectors1830 = models_all[1830]
+vectors1830.save_word2vec_format('./data/vectors1830.bin', binary=True)
+vectors1840 = models_all[1840]
+vectors1840.save_word2vec_format('./data/vectors1840.bin', binary=True)
+vectors1850 = models_all[1850]
+vectors1850.save_word2vec_format('./data/vectors1850.bin', binary=True)
+vectors1860 = models_all[1860]
+vectors1860.save_word2vec_format('./data/vectors1860.bin', binary=True)
+vectors1870 = models_all[1870]
+vectors1870.save_word2vec_format('./data/vectors1870.bin', binary=True)
+vectors1880 = models_all[1880]
+vectors1880.save_word2vec_format('./data/vectors1880.bin', binary=True)
+vectors1890 = models_all[1890]
+vectors1890.save_word2vec_format('./data/vectors1890.bin', binary=True)
+vectors1900 = models_all[1900]
+vectors1900.save_word2vec_format('./data/vectors1900.bin', binary=True)
+vectors1910 = models_all[1910]
+vectors1910.save_word2vec_format('./data/vectors1910.bin', binary=True)
+vectors1920 = models_all[1920]
+vectors1920.save_word2vec_format('./data/vectors1920.bin', binary=True)
+vectors1930 = models_all[1930]
+vectors1930.save_word2vec_format('./data/vectors1930.bin', binary=True)
+vectors1940 = models_all[1940]
+vectors1940.save_word2vec_format('./data/vectors1940.bin', binary=True)
+vectors1950 = models_all[1950]
+vectors1950.save_word2vec_format('./data/vectors1950.bin', binary=True)
+vectors1960 = models_all[1960]
+vectors1960.save_word2vec_format('./data/vectors1960.bin', binary=True)
+vectors1970 = models_all[1970]
+vectors1970.save_word2vec_format('./data/vectors1970.bin', binary=True)
+vectors1980 = models_all[1980]
+vectors1980.save_word2vec_format('./data/vectors1980.bin', binary=True)
+vectors1990 = models_all[1990]
+vectors1990.save_word2vec_format('./data/vectors1990.bin', binary=True)
+
+
 # save data in gensim format
 
 from gensim.models import KeyedVectors
