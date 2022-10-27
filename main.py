@@ -43,7 +43,7 @@ for x, y in models_all.items():
 
 #%% visualize word embeddings over time (PCA mit keyword als passiv)
 
-semchange.semchange(models_all, "culture", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
+semchange.semchange(models_all, "religious", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
 
 
 #%% association of work with different dimension
@@ -94,7 +94,8 @@ for i in keywords['toil']:
 # so far best CIs:     "toil", "toils", "toiling", "trouble", "exertion", "struggle", "drudgery", "pains", "labor", "labour", "travail", "fatigue"
 
 keywords['toil2'] = [
-    "toil", "toils", "toiling", "trouble", "exertion", "struggle", "drudgery", "pains", "labor", "labour", "travail", "fatigue"
+    "toil", "toils", "trouble", 'troubles', "exertion", "struggle", "struggles", "drudgery",
+    "pains", "labor", "labour", "travail", "fatigue"
 ]
 
 keywords['toil3'] = [
@@ -114,7 +115,10 @@ for i in keywords['toil2']:
 simdim.simdim(models_all, keywords, 'work', 'toil', rangelow=1850, rangehigh=2000, rangestep=10)
 simdim.simdim(models_all, keywords, 'work', 'toil2')
 
-keywords['pleasure'] = ["fun", "enjoy", "pleasant", "happy", "like", "love", "delight"]
+keywords['pleasure'] = [
+    "fun", "pleasure", "enjoy", "pleasant", "happy", "like", "love", "delight", "happiness",
+    "satisfaction", "bliss"
+]
 
 for i in keywords['pleasure']:
     for year, model in models_all.items():
@@ -127,7 +131,10 @@ simdim.simdim(models_all, keywords, 'work', 'toil3', 'pleasure', ci=95)
 simdim.simdim(models_all, keywords, 'work', 'toil4', 'pleasure', ci=95)
 
 
-keywords['leisure'] = ["leisure", "ease", "rest", "recreation", "relaxation", "freedom"]
+keywords['leisure'] = [
+    "leisure", "ease", "rest", "recreation", "relaxation", "freedom"
+]
+
 simdim.simdim(models_all, keywords, 'work', 'leisure')
 
 simdim.simdim(models_all, keywords, 'work', 'toil', 'leisure')
@@ -232,8 +239,6 @@ simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat', 'status', 'social'
 
 keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
 keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
-simdim.simdim(models_all, keywords, 'work', 'rich', 'poor')
-
 
 keywords['affluence'] = keywords['rich'] + keywords['poor']
 
@@ -245,7 +250,10 @@ for i in keywords['affluence']:
 
 simdim.simdim(models_all, keywords, 'work', 'affluence')  # --> Piketty!
 
-keywords['religion'] = ["redemption", "salvation", "god", "religion", "holy"]
+keywords['religion'] = [
+    "redemption", "salvation", "god", "religion", "holy", "calling", "faith", "pious",
+    "spiritual", "sacred", "divine", "belief", "worship"
+]
 
 for i in keywords['religion']:
     for year, model in models_all.items():
@@ -261,7 +269,8 @@ simdim.simdim(models_all, keywords, 'work', 'religion')
 
 keywords['moral'] = [
     'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
-    'virtuous', 'sinful', 'virtue', 'vice'
+    'virtuous', 'sinful', 'virtue', 'vice',
+    "decent", "noble", "honour", "integrity", "worth", "dignity"
 ]
 
 keywords['moral2'] = [
