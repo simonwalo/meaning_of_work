@@ -37,13 +37,13 @@ models_all = {
 
 for x, y in models_all.items():
     print(x)
-    print(y.most_similar("toil"))
+    print(y.most_similar("work"))
 
 # --> work has a different meaning before 1850
 
 #%% visualize word embeddings over time (PCA mit keyword als passiv)
 
-semchange.semchange(models_all, "toil", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
+semchange.semchange(models_all, "culture", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
 
 
 #%% association of work with different dimension
