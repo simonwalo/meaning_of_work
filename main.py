@@ -346,7 +346,7 @@ keywords['female'] = [
 simdim.simdim(models_all, keywords, 'work', 'male')
 simdim.simdim(models_all, keywords, 'work', 'female')
 simdim.simdim(models_all, keywords, 'work', 'male', 'female',  rangelow=1850, rangehigh=2000, rangestep=10)
-simdim.simdim(models_all, keywords, 'work', 'male', 'female')
+simdim.simdim(models_all, keywords, 'work', 'male', 'female', ci=90)
 
 
 # typische arbeitsgeräte für verschiedene epochen
@@ -430,6 +430,8 @@ for i in df.verbs:
     if i in models_all[1810]:
         verbs.append(i)
 
+# check distance between "work" and different POS
+
 for year, model in models_all.items():
     if year >= 1850:
         print(year, model.n_similarity(keywords['work'], adjectives))
@@ -442,6 +444,36 @@ for year, model in models_all.items():
     if year >= 1850:
         print(year, model.n_similarity(keywords['work'], verbs))
 
+# check distance between different POS
+
 for year, model in models_all.items():
     if year >= 1850:
         print(year, model.n_similarity(nouns, verbs))
+
+for year, model in models_all.items():
+    if year >= 1850:
+        print(year, model.n_similarity(nouns, adjectives))
+
+for year, model in models_all.items():
+    if year >= 1850:
+        print(year, model.n_similarity(adjectives, verbs))
+
+
+
+
+#%% check if model.n_similarity
+
+models_all[1990].n_similarity(['test', "try"], ['hello', "yes"])
+models_all[1990].n_similarity(['test'], ['hello'])
+models_all[1990].n_similarity(['test'], ["yes"])
+models_all[1990].n_similarity(["try"], ['hello'])
+models_all[1990].n_similarity(["try"], ["yes"])
+
+
+
+mean1 = models_all[1990].get_mean_vector(['test', "try"])
+mean2 = models_all[1990].get_mean_vector(['hello', "yes"])
+
+models_all[1990].n_similarity([mean1], [mean2])
+
+# --> n_similarity macht zuerst mittelwert, dann similarity --> nicht dasselbe wie umgekehrt!
