@@ -82,7 +82,9 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
 
     # show plot
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.title(f'Association of dimension(s) with {key=}')
+    plt.xlabel("Year")
+    plt.ylabel("Cosine Similarity")
+    plt.xticks(range(1850, 2000, 20))
     plt.tight_layout()
     plt.show()
     plt.close()

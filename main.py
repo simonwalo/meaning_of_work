@@ -93,7 +93,7 @@ for i in keywords['toil']:
 
 # so far best CIs:     "toil", "toils", "toiling", "trouble", "exertion", "struggle", "drudgery", "pains", "labor", "labour", "travail", "fatigue"
 
-keywords['toil2'] = [
+keywords['Toil & Trouble'] = [
     "toil", "toils", "trouble", 'troubles', "exertion", "struggle", "struggles", "drudgery",
     "pains", "labor", "labour", "travail", "fatigue"
 ]
@@ -106,27 +106,27 @@ keywords['toil4'] = [
     "toil", "trouble", "exertion", "struggle", "drudgery"
 ]
 
-for i in keywords['toil2']:
+for i in keywords['Toil & Trouble']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
 simdim.simdim(models_all, keywords, 'work', 'toil', rangelow=1850, rangehigh=2000, rangestep=10)
-simdim.simdim(models_all, keywords, 'work', 'toil2')
+simdim.simdim(models_all, keywords, 'work', 'Toil & Trouble')
 
-keywords['pleasure'] = [
+keywords['Pleasure'] = [
     "fun", "pleasure", "enjoy", "pleasant", "happy", "like", "love", "delight", "happiness",
     "satisfaction", "bliss"
 ]
 
-for i in keywords['pleasure']:
+for i in keywords['Pleasure']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'toil2', 'pleasure', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'Toil & Trouble', 'Pleasure', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'toil3', 'pleasure', ci=95)
 simdim.simdim(models_all, keywords, 'work', 'toil4', 'pleasure', ci=95)
 
@@ -178,19 +178,19 @@ sim_oneterm.sim_oneterm(models_all, keywords, 'work', 'pleasant')
 
 #%% marx: alienation (extrinsic vs. intrinsic)
 
-keywords['mat'] = [
+keywords['Extrinsic'] = [
                     "earn", "earns", "earning", "earnings",
                     "wage", "wages", "salary", "income", "remuneration", "pay",
                     "secure", "security", "insecure", "insecurity"
 ]
 
-for i in keywords['mat']:
+for i in keywords['Extrinsic']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-keywords['mat'] = [
+keywords['Extrinsic'] = [
                     "earn", "earning", "earnings",
                     "wage", "wages", "salary", "income", "remuneration", "pay",
                     "secure", "security", "insecure", "insecurity"
@@ -201,23 +201,23 @@ keywords['secure'] = [
 ]
 
 
-keywords['postmat'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless",
+keywords['Intrinsic'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless",
                        "expression", "creative"]
 
-for i in keywords['postmat']:
+for i in keywords['Intrinsic']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-keywords['postmat'] = ["interesting", "boring", "fulfilling", "useful", "useless",
+keywords['Intrinsic'] = ["interesting", "boring", "fulfilling", "useful", "useless",
                        "expression", "creative"]
 
-simdim.simdim(models_all, keywords, 'work', 'mat')
-simdim.simdim(models_all, keywords, 'work', 'postmat')
+simdim.simdim(models_all, keywords, 'work', 'Extrinsic')
+simdim.simdim(models_all, keywords, 'work', 'Intrinsic')
 simdim.simdim(models_all, keywords, 'work', 'secure')
 
-simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'Extrinsic', 'Intrinsic', ci=90)
 
 keywords['useful'] = ["useful", "society"]
 simdim.simdim(models_all, keywords, 'work', 'useful')
@@ -240,7 +240,7 @@ simdim.simdim(models_all, keywords, 'work', 'mat', 'postmat', 'status', 'social'
 keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
 keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
 
-keywords['affluence'] = keywords['rich'] + keywords['poor']
+keywords['Affluence'] = keywords['rich'] + keywords['poor']
 
 for i in keywords['affluence']:
     for year, model in models_all.items():
@@ -250,7 +250,7 @@ for i in keywords['affluence']:
 
 simdim.simdim(models_all, keywords, 'work', 'affluence')  # --> Piketty!
 
-keywords['religion'] = [
+keywords['Religion'] = [
     "redemption", "salvation", "god", "religion", "holy", "calling", "faith", "pious",
     "spiritual", "sacred", "divine", "belief", "worship"
 ]
@@ -267,7 +267,7 @@ for i in keywords['religion']:
 
 simdim.simdim(models_all, keywords, 'work', 'religion')
 
-keywords['moral'] = [
+keywords['Morality'] = [
     'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
     'virtuous', 'sinful', 'virtue', 'vice',
     "decent", "noble", "honour", "integrity", "worth", "dignity"
@@ -278,28 +278,25 @@ keywords['moral2'] = [
 ]
 
 
-for i in keywords['moral']:
+for i in keywords['Morality']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'moral')  # --> Piketty!
+simdim.simdim(models_all, keywords, 'work', 'Morality')  # --> Piketty!
 
 simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence', ci=90)
-simdim.simdim(models_all, keywords, 'work', 'religion', 'affluence', ci=90)
-simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'Religion', 'Affluence', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'Religion', 'Morality', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'religion', 'moral2', ci=90)
-simdim.simdim(models_all, keywords, 'work', 'moral', 'affluence', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'Morality', 'Affluence', ci=90)
 
 
 
 
 keywords['success'] = ["success", "succeed", "failure", "fail"]
 simdim.simdim(models_all, keywords, 'work', 'success')
-
-
-
 
 
 keywords['vocation'] = ["vocation", "calling", "meaning", "purpose"]
