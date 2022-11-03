@@ -3,7 +3,9 @@
 import sim_occs
 import semchange
 import simdim
+import simdim2
 import sim_oneterm
+import listsim
 from gensim.models import KeyedVectors
 
 
@@ -83,28 +85,14 @@ for i in keywords['work']:
 
 #%% smith: toil (einzelne Begriffe anzeigen?)
 
-keywords['toil'] = [
-    "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous", "grind"
+keywords['Toil & Trouble'] = [
+    "toil", "toils", "trouble", 'troubles', "exertion", "struggle", "struggles", "drudgery",
+    "pains", "fatigue", "effort", "hard", "arduous", "strenuous"
 ]
 
 # check similarity of words
-for i in keywords['toil']:
-    print(models_all[1910].n_similarity(['exertion'], [i]))
-
-# so far best CIs:     "toil", "toils", "toiling", "trouble", "exertion", "struggle", "drudgery", "pains", "labor", "labour", "travail", "fatigue"
-
-keywords['Toil & Trouble'] = [
-    "toil", "toils", "trouble", 'troubles', "exertion", "struggle", "struggles", "drudgery",
-    "pains", "labor", "labour", "travail", "fatigue"
-]
-
-keywords['toil3'] = [
-    "hard", "arduous", "strenuous", "exhausting", "burdensome", "painful", "tough", "onerous"
-]
-
-keywords['toil4'] = [
-    "toil", "trouble", "exertion", "struggle", "drudgery"
-]
+checksim = listsim.listsim(models_all, keywords, 'Toil & Trouble')
+checksim.to_clipboard()
 
 for i in keywords['Toil & Trouble']:
     for year, model in models_all.items():
@@ -112,8 +100,7 @@ for i in keywords['Toil & Trouble']:
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'toil', rangelow=1850, rangehigh=2000, rangestep=10)
-simdim.simdim(models_all, keywords, 'work', 'Toil & Trouble')
+
 
 keywords['Pleasure'] = [
     "fun", "pleasure", "enjoy", "pleasant", "happy", "like", "love", "delight", "happiness",
@@ -127,7 +114,26 @@ for i in keywords['Pleasure']:
                 print(str(year) + ": " + i)
 
 simdim.simdim(models_all, keywords, 'work', 'Toil & Trouble', 'Pleasure', ci=90)
-simdim.simdim(models_all, keywords, 'work', 'toil3', 'pleasure', ci=95)
+
+
+keywords['toil'] = [
+    "hard", "struggle", "toil", "trouble", "suffer", "endure", "arduous", "strenuous", "grind"
+]
+
+keywords['toil3'] = [
+    "toil", "toils", "trouble", 'troubles', "exertion", "struggle", "struggles", "drudgery",
+    "pains", "fatigue", "effort", "hard", "arduous", "strenuous"
+]
+# check similarity of words
+checksim = listsim.listsim(models_all, keywords, 'toil3')
+checksim.to_clipboard()
+
+simdim.simdim(models_all, keywords, 'work', 'toil3', 'Pleasure', ci=90)
+
+simdim.simdim(models_all, keywords, 'work', 'toil', rangelow=1850, rangehigh=2000, rangestep=10)
+simdim.simdim(models_all, keywords, 'work', 'Toil & Trouble')
+
+
 simdim.simdim(models_all, keywords, 'work', 'toil4', 'pleasure', ci=95)
 
 
@@ -179,7 +185,7 @@ sim_oneterm.sim_oneterm(models_all, keywords, 'work', 'pleasant')
 #%% marx: alienation (extrinsic vs. intrinsic)
 
 keywords['Extrinsic'] = [
-                    "earn", "earns", "earning", "earnings",
+                    "earn", "earning", "earnings",
                     "wage", "wages", "salary", "income", "remuneration", "pay",
                     "secure", "security", "insecure", "insecurity"
 ]
@@ -190,19 +196,15 @@ for i in keywords['Extrinsic']:
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-keywords['Extrinsic'] = [
-                    "earn", "earning", "earnings",
-                    "wage", "wages", "salary", "income", "remuneration", "pay",
-                    "secure", "security", "insecure", "insecurity"
+
+keywords['Intrinsic'] = [
+    "interesting", "boring", "fulfilling", "useful", "useless",
+    "expression", "creative", "express", "satisfying", "stimulating", "expressive", "important"
 ]
 
-keywords['secure'] = [
-                      "secure", "security", "insecure", "insecurity"
-]
-
-
-keywords['Intrinsic'] = ["interesting", "boring", "fulfilling", "meaningful", "meaningless", "useful", "useless",
-                       "expression", "creative"]
+# check similarity of words
+checksim = listsim.listsim(models_all, keywords, 'Intrinsic')
+checksim.to_clipboard()
 
 for i in keywords['Intrinsic']:
     for year, model in models_all.items():
@@ -210,18 +212,20 @@ for i in keywords['Intrinsic']:
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-keywords['Intrinsic'] = ["interesting", "boring", "fulfilling", "useful", "useless",
-                       "expression", "creative"]
+
+simdim.simdim(models_all, keywords, 'work', 'Extrinsic', 'Intrinsic', ci=90)
 
 simdim.simdim(models_all, keywords, 'work', 'Extrinsic')
 simdim.simdim(models_all, keywords, 'work', 'Intrinsic')
 simdim.simdim(models_all, keywords, 'work', 'secure')
 
-simdim.simdim(models_all, keywords, 'work', 'Extrinsic', 'Intrinsic', ci=90)
 
 keywords['useful'] = ["useful", "society"]
 simdim.simdim(models_all, keywords, 'work', 'useful')
 
+keywords['secure'] = [
+                      "secure", "security", "insecure", "insecurity"
+]
 
 keywords['status'] = [
     "prestigious", "honorable", "esteemed", "influential", "reputable", "distinguished",
@@ -242,30 +246,27 @@ keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
 
 keywords['Affluence'] = keywords['rich'] + keywords['poor']
 
-for i in keywords['affluence']:
+for i in keywords['Affluence']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'affluence')  # --> Piketty!
 
 keywords['Religion'] = [
     "redemption", "salvation", "god", "religion", "holy", "calling", "faith", "pious",
     "spiritual", "sacred", "divine", "belief", "worship"
 ]
 
-for i in keywords['religion']:
+for i in keywords['Religion']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
 # check similarity of words
-for i in keywords['religion']:
-    print(models_all[1910].n_similarity(['calling'], [i]))
-
-simdim.simdim(models_all, keywords, 'work', 'religion')
+checksim = listsim.listsim(models_all, keywords, 'Religion')
+checksim.to_clipboard()
 
 keywords['Morality'] = [
     'good', 'evil', 'moral', 'immoral', 'good', 'bad', 'honest', 'dishonest',
@@ -273,26 +274,23 @@ keywords['Morality'] = [
     "decent", "noble", "honour", "integrity", "worth", "dignity"
 ]
 
-keywords['moral2'] = [
-    'good', 'moral', 'good', 'honest', 'virtuous', 'virtue'
-]
-
-
 for i in keywords['Morality']:
     for year, model in models_all.items():
         if model[i].all() == models_all[1840]['biology'].all():
             if year >= 1850:
                 print(str(year) + ": " + i)
 
-simdim.simdim(models_all, keywords, 'work', 'Morality')  # --> Piketty!
 
-simdim.simdim(models_all, keywords, 'work', 'religion', 'moral', 'affluence', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'Religion', 'Affluence', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'Religion', 'Morality', ci=90)
-simdim.simdim(models_all, keywords, 'work', 'religion', 'moral2', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'Morality', 'Affluence', ci=90)
 
+keywords['moral2'] = [
+    'good', 'moral', 'good', 'honest', 'virtuous', 'virtue'
+]
 
+simdim.simdim(models_all, keywords, 'work', 'Religion', 'Morality', 'Affluence', ci=90)
+simdim.simdim(models_all, keywords, 'work', 'religion', 'moral2', ci=90)
 
 
 keywords['success'] = ["success", "succeed", "failure", "fail"]

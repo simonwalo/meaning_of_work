@@ -2,7 +2,7 @@
 # debug: title of graph should inlude key name
 
 # define similarity function for n dimensions
-# cosine similarity between centers of word clouds
+# average of cosine similarities between all word combinations from different lists
 
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
@@ -13,7 +13,8 @@ import random
 
 
 
-def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangestep=10, ci=95, bootstrap=1000):
+
+def simdim2(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangestep=10, ci=95, bootstrap=1000):
 
     medians = pd.DataFrame()
     lower_cis = pd.DataFrame()
@@ -30,7 +31,11 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
             d = []
             for year, model in models.items():
                 if year in range(rangelow, rangehigh, rangestep):
-                    d.append(model.n_similarity(sample1, sample2))
+                    temp = []
+                    for word1 in sample1:
+                        for word2 in sample2:
+                            temp.append(model.n_similarity([word1], [word2]))
+                    d.append(sum(temp) / len(temp))
             d = np.asarray(d)
             data[i] = d
 
@@ -89,7 +94,6 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
     plt.tight_layout()
     plt.show()
     plt.close()
-
 
 
 
