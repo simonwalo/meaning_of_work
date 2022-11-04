@@ -1,15 +1,5 @@
 #%% import packages
-import sys
 from gensim.models import KeyedVectors
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import cm
-import pandas as pd
-import numpy as np
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
-import pickle
-from adjustText import adjust_text
-from scipy.interpolate import interp1d
 
 #%% load all data in C text format
 
@@ -35,56 +25,25 @@ embeddings1980 = KeyedVectors.load_word2vec_format("./data/english_all_sgns_gens
 embeddings1990 = KeyedVectors.load_word2vec_format("./data/english_all_sgns_gensim_1990.txt", binary=False, no_header=True)
 
 
+#%% save all data in gensim format
 
-#%% save embeddings in python format (loads faster)
-
-pickle.dump(embeddings1800, open("./data/embeddings1800.pickle", 'wb'))
-pickle.dump(embeddings1810, open("./data/embeddings1810.pickle", 'wb'))
-pickle.dump(embeddings1820, open("./data/embeddings1820.pickle", 'wb'))
-pickle.dump(embeddings1830, open("./data/embeddings1830.pickle", 'wb'))
-pickle.dump(embeddings1840, open("./data/embeddings1840.pickle", 'wb'))
-pickle.dump(embeddings1850, open("./data/embeddings1850.pickle", 'wb'))
-pickle.dump(embeddings1860, open("./data/embeddings1860.pickle", 'wb'))
-pickle.dump(embeddings1870, open("./data/embeddings1870.pickle", 'wb'))
-pickle.dump(embeddings1880, open("./data/embeddings1880.pickle", 'wb'))
-pickle.dump(embeddings1890, open("./data/embeddings1890.pickle", 'wb'))
-pickle.dump(embeddings1900, open("./data/embeddings1900.pickle", 'wb'))
-pickle.dump(embeddings1910, open("./data/embeddings1910.pickle", 'wb'))
-pickle.dump(embeddings1920, open("./data/embeddings1920.pickle", 'wb'))
-pickle.dump(embeddings1930, open("./data/embeddings1930.pickle", 'wb'))
-pickle.dump(embeddings1940, open("./data/embeddings1940.pickle", 'wb'))
-pickle.dump(embeddings1950, open("./data/embeddings1950.pickle", 'wb'))
-pickle.dump(embeddings1960, open("./data/embeddings1960.pickle", 'wb'))
-pickle.dump(embeddings1970, open("./data/embeddings1970.pickle", 'wb'))
-pickle.dump(embeddings1980, open("./data/embeddings1980.pickle", 'wb'))
-pickle.dump(embeddings1990, open("./data/embeddings1990.pickle", 'wb'))
-
-
-
-#%% save dict with all embeddings
-
-models_all = {
-    1800: pickle.load(open("./data/embeddings1800.pickle", 'rb')),
-    1810: pickle.load(open("./data/embeddings1810.pickle", 'rb')),
-    1820: pickle.load(open("./data/embeddings1820.pickle", 'rb')),
-    1830: pickle.load(open("./data/embeddings1830.pickle", 'rb')),
-    1840: pickle.load(open("./data/embeddings1840.pickle", 'rb')),
-    1850: pickle.load(open("./data/embeddings1850.pickle", 'rb')),
-    1860: pickle.load(open("./data/embeddings1860.pickle", 'rb')),
-    1870: pickle.load(open("./data/embeddings1870.pickle", 'rb')),
-    1880: pickle.load(open("./data/embeddings1880.pickle", 'rb')),
-    1890: pickle.load(open("./data/embeddings1890.pickle", 'rb')),
-    1900: pickle.load(open("./data/embeddings1900.pickle", 'rb')),
-    1910: pickle.load(open("./data/embeddings1910.pickle", 'rb')),
-    1920: pickle.load(open("./data/embeddings1920.pickle", 'rb')),
-    1930: pickle.load(open("./data/embeddings1930.pickle", 'rb')),
-    1940: pickle.load(open("./data/embeddings1940.pickle", 'rb')),
-    1950: pickle.load(open("./data/embeddings1950.pickle", 'rb')),
-    1960: pickle.load(open("./data/embeddings1960.pickle", 'rb')),
-    1970: pickle.load(open("./data/embeddings1970.pickle", 'rb')),
-    1980: pickle.load(open("./data/embeddings1980.pickle", 'rb')),
-    1990: pickle.load(open("./data/embeddings1990.pickle", 'rb')),
-}
-
-with open('./data/models_all.pickle', 'wb') as handle:
-    pickle.dump(models_all, handle, protocol=pickle.HIGHEST_PROTOCOL)
+embeddings1800.save('./data/vectors1800.kv')
+embeddings1810.save('./data/vectors1810.kv')
+embeddings1820.save('./data/vectors1820.kv')
+embeddings1830.save('./data/vectors1830.kv')
+embeddings1840.save('./data/vectors1840.kv')
+embeddings1850.save('./data/vectors1850.kv')
+embeddings1860.save('./data/vectors1860.kv')
+embeddings1870.save('./data/vectors1870.kv')
+embeddings1880.save('./data/vectors1880.kv')
+embeddings1890.save('./data/vectors1890.kv')
+embeddings1900.save('./data/vectors1900.kv')
+embeddings1910.save('./data/vectors1910.kv')
+embeddings1920.save('./data/vectors1920.kv')
+embeddings1930.save('./data/vectors1930.kv')
+embeddings1940.save('./data/vectors1940.kv')
+embeddings1950.save('./data/vectors1950.kv')
+embeddings1960.save('./data/vectors1960.kv')
+embeddings1970.save('./data/vectors1970.kv')
+embeddings1980.save('./data/vectors1980.kv')
+embeddings1990.save('./data/vectors1990.kv')
