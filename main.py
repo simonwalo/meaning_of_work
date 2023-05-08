@@ -43,7 +43,7 @@ for x, y in models_all.items():
 
 #%% visualize semantic change over time (PCA with keyword as passive projection)
 
-semchange.semchange(models_all, "religious", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
+semchange.semchange(models_all, "work", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
 
 
 #%% set up dictionary and define "work"
