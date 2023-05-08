@@ -2,7 +2,7 @@
 # debug: title of graph should inlude key name
 
 # define similarity function for n dimensions
-# cosine similarity between centers of word clouds
+# average of cosine similarities between all word combinations from different lists
 
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
@@ -10,12 +10,11 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
 import random
-import matplotlib.lines as mlines
 
 
 
 
-def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangestep=10, ci=95, bootstrap=1000):
+def simdim2(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangestep=10, ci=95, bootstrap=1000):
 
     medians = pd.DataFrame()
     lower_cis = pd.DataFrame()
@@ -32,7 +31,11 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
             d = []
             for year, model in models.items():
                 if year in range(rangelow, rangehigh, rangestep):
-                    d.append(model.n_similarity(sample1, sample2))
+                    temp = []
+                    for word1 in sample1:
+                        for word2 in sample2:
+                            temp.append(model.n_similarity([word1], [word2]))
+                    d.append(sum(temp) / len(temp))
             d = np.asarray(d)
             data[i] = d
 
@@ -66,8 +69,7 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
     xnew = np.linspace(rangelow, (rangehigh - 10), 100)
 
     n = len(dims)
-    markslist = ['o', 's']
-    marks = iter(markslist)
+    colors = iter(cm.rainbow(np.linspace(0, 1, n)))
 
     for dim in dims:
         y = medians[dim].tolist()
@@ -79,24 +81,19 @@ def simdim(models, keywords, key, *dims, rangelow=1850, rangehigh=2000, rangeste
         high = upper_cis[dim].tolist()
         fun_high = interp1d(x, high, kind='cubic')
 
-        plt.plot(xnew, fun(xnew), "-", x, y, next(marks), color='black')
-        plt.fill_between(xnew, fun_low(xnew), fun_high(xnew), alpha=0.2, color='grey')
+        color = next(colors)
+        plt.plot(xnew, fun(xnew), "-", color=color, label=dim)
+        plt.plot(x, y, 'o', color=color)
+        plt.fill_between(xnew, fun_low(xnew), fun_high(xnew), alpha=0.2)
 
-
-    # add legend and labels
-    legend1 = mlines.Line2D([], [], color='black', marker='o', label=dims[0])
-    legend2 = mlines.Line2D([], [], color='black', marker='s', label=dims[1])
-    plt.legend(handles=[legend1, legend2], loc='center left', bbox_to_anchor=(1, 0.5))
-
+    # show plot
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlabel("Year")
     plt.ylabel("Cosine Similarity")
     plt.xticks(range(1850, 2000, 20))
     plt.tight_layout()
-
-    # show plot
     plt.show()
     plt.close()
-
 
 
 

@@ -1,2 +1,4 @@
 # Project exclude paths
 /data/
+/Validation.py
+/old_functions.py
