@@ -166,12 +166,20 @@ keywords['econ'] = [
     "economy", "invest", "economic", "business", "money", "trade", "market"
 ]
 
+keywords['econ'] = [
+    "market"
+]
+
 keywords['liberal'] = [
     "free", "liberal", "freedom", "liberalism", "laissez", "faire"
 ]
 
 keywords['intervention'] = [
-    "regulate", "regulated", "intervention", "state"
+    "regulate", "regulated", "intervention", "state", "rules", "rule"
+]
+
+keywords['intervention'] = [
+    "regulate", "intervention"
 ]
 
 # check if all terms exist in all embeddings
