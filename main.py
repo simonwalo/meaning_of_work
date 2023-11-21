@@ -37,7 +37,7 @@ models_all = {
 
 for x, y in models_all.items():
     print(x)
-    print(y.most_similar("work"))
+    print(y.most_similar("taxes"))
 
 # --> work has a different meaning before 1850
 
@@ -46,7 +46,9 @@ for x, y in models_all.items():
 semchange.semchange(models_all, "work", rangelow=1810, rangehigh=2000, rangestep=60, export=False)
 
 
-#%% set up dictionary and define "work"
+#%% Protestant Ethic
+
+# set up dict for "work"
 
 keywords = dict()
 
@@ -80,82 +82,6 @@ checksim = listsim.listsim(models_all, keywords, 'work')
 checksim.to_clipboard() # insert & check in excel
 
 
-#%% Smith: toil & trouble
-
-keywords['Toil & Trouble'] = [
-    "toil", "toils", "trouble", 'troubles', "exertion", "struggle", "struggles", "drudgery",
-    "pains", "fatigue", "effort", "hard", "arduous", "strenuous"
-]
-
-# check similarity of words
-checksim = listsim.listsim(models_all, keywords, 'Toil & Trouble')
-checksim.to_clipboard()
-
-# check if all terms exist in all embeddings
-for i in keywords['Toil & Trouble']:
-    for year, model in models_all.items():
-        if model[i].all() == models_all[1840]['biology'].all():
-            if year >= 1850:
-                print(str(year) + ": " + i)
-
-
-
-keywords['Pleasure'] = [
-    "fun", "pleasure", "enjoy", "pleasant", "happy", "like", "love", "delight", "happiness",
-    "satisfaction", "bliss"
-]
-
-# check if all terms exist in all embeddings
-for i in keywords['Pleasure']:
-    for year, model in models_all.items():
-        if model[i].all() == models_all[1840]['biology'].all():
-            if year >= 1850:
-                print(str(year) + ": " + i)
-
-simdim.simdim(models_all, keywords, 'work', 'Toil & Trouble', 'Pleasure', ci=90)
-
-
-
-#%% Marx: alienation (extrinsic vs. intrinsic)
-
-keywords['Extrinsic'] = [
-                    "earn", "earning", "earnings",
-                    "wage", "wages", "salary", "income", "remuneration", "pay",
-                    "secure", "security", "insecure", "insecurity"
-]
-
-# check if all terms exist in all embeddings
-for i in keywords['Extrinsic']:
-    for year, model in models_all.items():
-        if model[i].all() == models_all[1840]['biology'].all():
-            if year >= 1850:
-                print(str(year) + ": " + i)
-
-# check similarity of words
-checksim = listsim.listsim(models_all, keywords, 'Extrinsic')
-checksim.to_clipboard()
-
-keywords['Intrinsic'] = [
-    "interesting", "boring", "fulfilling", "useful", "useless",
-    "expression", "creative", "express", "satisfying", "stimulating", "expressive", "important"
-]
-
-# check similarity of words
-checksim = listsim.listsim(models_all, keywords, 'Intrinsic')
-checksim.to_clipboard()
-
-# check if all terms exist in all embeddings
-for i in keywords['Intrinsic']:
-    for year, model in models_all.items():
-        if model[i].all() == models_all[1840]['biology'].all():
-            if year >= 1850:
-                print(str(year) + ": " + i)
-
-
-simdim.simdim(models_all, keywords, 'work', 'Extrinsic', 'Intrinsic', ci=90)
-
-
-#%% Weber: wealth, morality & religion
 
 keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
 keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
@@ -187,12 +113,12 @@ checksim = listsim.listsim(models_all, keywords, 'Religion')
 checksim.to_clipboard()
 
 keywords['moralpos'] = [
-    "good", "moral", "good", "honest", "virtuous", "virtue", "decent", "noble",
-    "honour", "integrity", "worth", "dignity"
+    "good", "moral", "honest", "virtuous", "virtue", "decent", "noble",
+    "honour", "integrity", "worth", "dignity", "just", "justice"
 ]
 
 keywords['moralneg'] = [
-    "evil", "immoral", "bad", "dishonest", "sinful", "vice"
+    "evil", "immoral", "bad", "dishonest", "sinful", "vice", "unjust", "injustice"
 ]
 
 
@@ -220,6 +146,184 @@ simdim.simdim(models_all, keywords, 'work', 'Morality', 'Affluence', ci=90)
 
 simdim.simdim(models_all, keywords, 'work', 'rich', 'poor', ci=90)
 simdim.simdim(models_all, keywords, 'work', 'moralpos', 'moralneg', ci=90)
+
+
+
+
+
+
+
+#%% (Neo-)Liberalism
+
+
+keywords['econ'] = [
+    "profit", "profitable", "cost", "benefit", "sell", "revenue", "gain",
+    "loss", "capital", "invest", "economic", "price", "business", "money", "trade",
+    "pay", "paid"
+]
+
+keywords['econ'] = [
+    "economy", "invest", "economic", "business", "money", "trade", "market"
+]
+
+keywords['econ'] = [
+    "market"
+]
+
+keywords['liberal'] = [
+    "free", "liberal", "freedom", "liberalism", "laissez", "faire"
+]
+
+keywords['intervention'] = [
+    "regulate", "regulated", "intervention", "state", "rules", "rule"
+]
+
+keywords['intervention'] = [
+    "regulate", "intervention"
+]
+
+# check if all terms exist in all embeddings
+for i in keywords['intervention']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+
+keywords['liberal'] = [
+    "free", "liberal", "freedom"
+]
+
+
+simdim.simdim(models_all, keywords, 'econ', 'liberal', 'intervention', ci=90)
+
+
+
+
+
+#%% moralische Bewertung von Ungleichheit
+
+
+keywords['moralpos'] = [
+    "good", "just", "justice", "fair"
+]
+
+keywords['moralneg'] = [
+    "evil", "immoral", "bad", "unjust", "injustice", "unfair"
+]
+
+
+keywords['inequality'] = [
+    "inequality", "unequal", "inequalities", "disparity"
+]
+
+# check if all terms exist in all embeddings
+for i in keywords['inequality']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+simdim.simdim(models_all, keywords, 'inequality', 'moralpos', 'moralneg', ci=90)
+
+
+
+
+
+#%% moralische Bewertung von steuern
+
+
+keywords['moralpos'] = [
+    "good", "just", "justice", "fair"
+]
+
+keywords['moralneg'] = [
+    "evil", "immoral", "bad", "unjust", "injustice", "unfair"
+]
+
+
+keywords['taxes'] = [
+    "taxes", "taxation", "tax"
+]
+
+# check if all terms exist in all embeddings
+for i in keywords['taxes']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+simdim.simdim(models_all, keywords, 'taxes', 'moralpos', 'moralneg', ci=90)
+
+
+
+
+#%% Meritocracy
+
+
+keywords['rich'] = ["wealth", "wealthy", "rich", "affluence", "affluent"]
+keywords['poor'] = ["poor", "poverty", "impoverished", "destitute", "needy"]
+
+keywords['Affluence'] = keywords['rich'] + keywords['poor']
+
+
+keywords['merit'] = [
+    "merit", "deserve", "deserved"
+]
+
+keywords['luck'] = [
+    "luck", "lucky", "random", "inherit", "inherited", "unlucky"
+]
+
+
+
+# check if all terms exist in all embeddings
+for i in keywords['taxes']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+simdim.simdim(models_all, keywords, 'Affluence', 'merit', 'luck', ci=90)
+
+
+
+
+
+
+
+#%% Economy: privat profits vs. social benefits
+
+
+keywords['econ'] = [
+    "economy", "invest", "economic", "business", "money", "trade"
+]
+
+keywords['private'] = [
+    "private", "profit", "profits", "gain", "money"
+]
+
+keywords['social'] = [
+    "social", "benefit", "benefits", "welfare", "society"
+]
+
+
+
+# check if all terms exist in all embeddings
+for i in keywords['social']:
+    for year, model in models_all.items():
+        if model[i].all() == models_all[1840]['biology'].all():
+            if year >= 1850:
+                print(str(year) + ": " + i)
+
+simdim.simdim(models_all, keywords, 'econ', 'private', 'social', ci=90)
+
+
+
+
+
+
+
 
 
 
