@@ -1,6 +1,6 @@
 The Meaning of Work
 =================
-Code associated with my paper on the Meaning of Work. The full paper can be found here when the paper is published.
+Code associated with my paper on the Meaning of Work. Preprint available here: https://osf.io/preprints/socarxiv/pxj7m/
 
 ## Instructions
 <i>Load data</i>
